@@ -51,20 +51,40 @@ def get(data):
     # print( globals()[data])
     return globals()[data]
 
+# class config:
+#     def __init__(self):
+#         self.configfile = configparser.ConfigParser()
+#         self.configfile.optionxform = str
+#         self.configfile.read(configfilename, encoding="utf-8")
+#         conf = {}
+#         for x in self.configfile:
+#             for y in self.configfile[x]:
+#                 #print(y)
+#                 conf = conf | {y: json.loads(self.configfile[x][y])}
+#                 # print(conf)
+#         #print(conf)
+#         globals().update(conf)
+#         # print(globals())
+
 class config:
     def __init__(self):
         self.configfile = configparser.ConfigParser()
         self.configfile.optionxform = str
         self.configfile.read(configfilename, encoding="utf-8")
+
         conf = {}
+
         for x in self.configfile:
             for y in self.configfile[x]:
-                #print(y)
-                conf = conf | {y: json.loads(self.configfile[x][y])}
-                # print(conf)
-        #print(conf)
+                try:
+                    # 尝试把 ini 的 value 当 JSON 解析
+                    conf[y] = json.loads(self.configfile[x][y])
+                except json.JSONDecodeError:
+                    # 如果不是 JSON，就直接用字符串
+                    conf[y] = self.configfile[x][y]
+
+        # 更新到全局变量
         globals().update(conf)
-        # print(globals())
 
     def get(self, data):
         return self.configfile["DEFAULT"][data]
@@ -259,63 +279,66 @@ class data:
 
     def bind(self,mqtt):
         bind_button = GPIO.get_gpio_value('GPIO-H18')
+        #从mqtt消息获取bind状态
         #if self.binded != True:
         if bind_button == True and self.binded != True:
             logging.info('Binded')
             self.binded = True
-            try:
-                topic = "station/sensor_type_collection/" + station_ID
-                msg = {"station_id": station_ID, "location_name": location}
-                msg2 = []
-                for x in range(len(sensor)):
-                    msg2 += [
-                        {
-                            "sensor_type": sensor[x],
-                            "max_value_lv1": min_max_lv1[x][1],
-                            "max_value_lv2": min_max_lv2[x][1],
-                            "min_value_lv1": min_max_lv1[x][0],
-                            "min_value_lv2": min_max_lv2[x][0],
-                            "unit": str(unit[x]),
-                        }
-                    ]
-                msg = msg | {"sensor_type_detail": msg2}
-                msg = {"event": "bind", "content": msg}
-                if mqtt.publish(topic, json.dumps(msg, indent=4, separators=(",", ": "))):
-                    logging.info('Binded sent')
-                    #self.binded = True
-            except Exception as exc:
-                print(inspect.stack()[0][3], ":", str(exc))
-                logging.error(f"{inspect.stack()[0][3]}: {str(exc)}")
+            #不需要发送bind mqtt消息
+            # try:
+            #     topic = "station/sensor_type_collection/" + station_ID
+            #     msg = {"station_id": station_ID, "location_name": location}
+            #     msg2 = []
+            #     for x in range(len(sensor)):
+            #         msg2 += [
+            #             {
+            #                 "sensor_type": sensor[x],
+            #                 "max_value_lv1": min_max_lv1[x][1],
+            #                 "max_value_lv2": min_max_lv2[x][1],
+            #                 "min_value_lv1": min_max_lv1[x][0],
+            #                 "min_value_lv2": min_max_lv2[x][0],
+            #                 "unit": str(unit[x]),
+            #             }
+            #         ]
+            #     msg = msg | {"sensor_type_detail": msg2}
+            #     msg = {"event": "bind", "content": msg}
+            #     if mqtt.publish(topic, json.dumps(msg, indent=4, separators=(",", ": "))):
+            #         logging.info('Binded sent')
+            #         #self.binded = True
+            # except Exception as exc:
+            #     print(inspect.stack()[0][3], ":", str(exc))
+            #     logging.error(f"{inspect.stack()[0][3]}: {str(exc)}")
 
         #if bind_button == 0 and self.binded != False:
         if bind_button == False and self.binded != False:
-            try:
-                logging.info('Unbinded')
-                self.binded = False
-                topic = "station/sensor_type_collection/" + station_ID
-                msg = {"station_id": station_ID, "location_name": location}
+            logging.info('Unbinded')
+            self.binded = False
+            #不需要发送unbind mqtt消息
+            # try:
+            #     topic = "station/sensor_type_collection/" + station_ID
+            #     msg = {"station_id": station_ID, "location_name": location}
 
-                msg2 = []
-                for x in range(len(sensor)):
-                    msg2 += [
-                        {
-                            "sensor_type": sensor[x],
-                            "max_value_lv1": min_max_lv1[x][1],
-                            "max_value_lv2": min_max_lv2[x][1],
-                            "min_value_lv1": min_max_lv1[x][0],
-                            "min_value_lv2": min_max_lv2[x][0],
-                            "unit": str(unit[x]),
-                        }
-                    ]
-                msg = msg | {"sensor_type_detail": msg2}
-                msg = {"event": "unbind", "content": msg}
-                #print(msg)
-                if mqtt.publish(topic, json.dumps(msg, indent=4, separators=(",", ": "))):
-                    logging.info('Unbinded sent')
-                    #self.binded = False
-            except Exception as exc:
-                print(inspect.stack()[0][3], ":", str(exc))
-                logging.error(f"{inspect.stack()[0][3]}: {str(exc)}")
+            #     msg2 = []
+            #     for x in range(len(sensor)):
+            #         msg2 += [
+            #             {
+            #                 "sensor_type": sensor[x],
+            #                 "max_value_lv1": min_max_lv1[x][1],
+            #                 "max_value_lv2": min_max_lv2[x][1],
+            #                 "min_value_lv1": min_max_lv1[x][0],
+            #                 "min_value_lv2": min_max_lv2[x][0],
+            #                 "unit": str(unit[x]),
+            #             }
+            #         ]
+            #     msg = msg | {"sensor_type_detail": msg2}
+            #     msg = {"event": "unbind", "content": msg}
+            #     #print(msg)
+            #     if mqtt.publish(topic, json.dumps(msg, indent=4, separators=(",", ": "))):
+            #         logging.info('Unbinded sent')
+            #         #self.binded = False
+            # except Exception as exc:
+            #     print(inspect.stack()[0][3], ":", str(exc))
+            #     logging.error(f"{inspect.stack()[0][3]}: {str(exc)}")
 
     def get(self):
         """while databuffer:
@@ -327,6 +350,15 @@ class data:
             msg = databuffer.pop(0)
             #print(msg)
             #print(msg["device_ID"])
+            #增加检测bind与unbind状态的信息，如果不是该数据则向下执行
+            if "status" in msg:
+                if msg["status"] == "bind":
+                    self.binded = True
+                    continue
+                elif msg["status"] == "unbind":
+                    self.binded = False
+                    continue
+            
             i = next((i for i, item in enumerate(self.value2) if item["device_id"] == msg["device_id"]), None)
             msg.update({"time": time_now})
             #print(i)
@@ -483,7 +515,8 @@ class status_led:
         self.status = None
         self.com = None
         self.found = False
-        self.find_port()
+        # 不需要串口偵測
+        # self.find_port()
 
     def find_port(self):
         try:
@@ -572,7 +605,8 @@ class status_led:
                     self.off()
                     self.status = 1
                     #print(1)
-                    self.master.execute(1, cst.WRITE_SINGLE_COIL, 7, output_value=65280)
+                    # 不需要led，增加屏幕闪烁
+                    # self.master.execute(1, cst.WRITE_SINGLE_COIL, 7, output_value=65280)
                 #print(2)
             except Exception:
                 self.found = False
@@ -587,7 +621,8 @@ class status_led:
                 if self.status != 2:
                     self.off()
                     self.status = 2
-                    self.master.execute(1, cst.WRITE_SINGLE_COIL, 3, output_value=65280)
+                    # 不需要led，增加屏幕闪烁
+                    # self.master.execute(1, cst.WRITE_SINGLE_COIL, 3, output_value=65280)
             except Exception:
                 self.found = False
         else:
@@ -600,7 +635,8 @@ class status_led:
                     self.off()
                     #self.master.execute(1, cst.WRITE_SINGLE_COIL, 2, output_value=65280)
                     self.status = 3
-                    self.master.execute(1, cst.WRITE_SINGLE_COIL, 2, output_value=65280)
+                    # 不需要led，增加屏幕闪烁
+                    # self.master.execute(1, cst.WRITE_SINGLE_COIL, 2, output_value=65280)
             except Exception:
                 self.found = False
         else:

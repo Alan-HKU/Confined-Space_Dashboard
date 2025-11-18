@@ -22,7 +22,7 @@ import os
 from modules import *
 from widgets import *
 
-from funciton import *
+from funciton import *   #data & GUI class
 
 
 # SET AS GLOBAL WIDGETS
@@ -203,3 +203,7 @@ if __name__ == "__main__":
     #timer.start(3000)
     # set display loop
     sys.exit(app.exec())
+
+
+
+# git push -u Confined-Space_Dashboard main --force
