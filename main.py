@@ -165,16 +165,27 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     all_init()
+
     os.environ["QT_FONT_DPI"] = get("DPI") # FIX Problem for High DPI and Scale above 100%
-    private_mqtt=mqtt(get("private_broker"),get("private_broker_port"),get("private_topic"))
-    public_mqtt=mqtt(get("public_broker"),get("public_broker_port"),get("private_topic"))
+    print(f"Set QT_FONT_DPI: {os.environ['QT_FONT_DPI']}")
+    # private_mqtt=mqtt(get("private_broker"),get("private_broker_port"),get("private_topic"))
+    # print(f"Private MQTT Initialized to {get('private_broker')}:{get('private_broker_port')} Topic: {get('private_topic')}")
+    # public_mqtt=mqtt(get("public_broker"),get("public_broker_port"),get("private_topic"))
+    # print(f"Public MQTT Initialized to {get('public_broker')}:{get('public_broker_port')} Topic: {get('private_topic')}")
+    private_mqtt = mqtt_client_init(get("private_broker"),get("private_broker_port"),get("private_topic"))
+    print(f"Private MQTT Initialized to {get('private_broker')}:{get('private_broker_port')} Topic: {get('private_topic')}")
+    public_mqtt = mqtt_client_init(get("public_broker"),get("public_broker_port"),get("private_topic"))
+    print(f"Public MQTT Initialized to {get('public_broker')}:{get('public_broker_port')} Topic: {get('private_topic')}")
+    print("MQTT Clients Initialized")
     data=data(public_mqtt)
     GUI=GUI()
+
     #app = QApplication(sys.argv)
     app = QApplication()
     app.setWindowIcon(QIcon("icon.ico"))
     window = MainWindow()
     window_init(window)
+
     timer = QTimer()
     timer.timeout.connect(lambda: GUI.update(window,data))
     timer.start(get("GUIReflashTime"))
@@ -195,9 +206,10 @@ if __name__ == "__main__":
     timer6 = QTimer()
     timer6.timeout.connect(lambda: GUI.switch_display_device(data))
     timer6.start(get("DisplaySwitchTime"))
-    timer7 = QTimer()
-    timer7.timeout.connect(lambda: data.bind(public_mqtt))
-    timer7.start(get("GUIReflashTime"))
+    #取消定時綁定，以mqtt代替
+    # timer7 = QTimer()
+    # timer7.timeout.connect(lambda: data.bind(public_mqtt))
+    # timer7.start(get("GUIReflashTime"))
     #timer2 = QTimer()
     #timer.timeout.connect(lambda: update_label(window))
     #timer.start(3000)

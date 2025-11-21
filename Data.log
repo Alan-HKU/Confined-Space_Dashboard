@@ -20420,3 +20420,174 @@
 2025-11-18 12:38:58,453 INFO: result []
 2025-11-18 12:38:59,449 INFO: result []
 2025-11-18 12:39:00,462 INFO: result []
+2025-11-19 10:57:53,745 INFO: Start logging
+2025-11-19 10:57:53,753 ERROR: Failed to set GPIO-H19 as input
+2025-11-19 10:57:53,753 ERROR: Failed to set GPIO-H18 as input
+2025-11-19 10:57:53,872 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-19 10:57:53,874 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-19 11:03:21,574 INFO: Start logging
+2025-11-19 11:03:21,578 ERROR: Failed to set GPIO-H19 as input
+2025-11-19 11:03:21,579 ERROR: Failed to set GPIO-H18 as input
+2025-11-19 11:03:22,602 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-19 11:03:22,603 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-19 11:04:31,728 INFO: Start logging
+2025-11-19 11:04:31,733 ERROR: Failed to set GPIO-H19 as input
+2025-11-19 11:04:31,733 ERROR: Failed to set GPIO-H18 as input
+2025-11-19 11:04:32,317 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-19 11:04:32,318 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-19 11:05:13,424 INFO: Start logging
+2025-11-19 11:05:13,429 ERROR: Failed to set GPIO-H19 as input
+2025-11-19 11:05:13,429 ERROR: Failed to set GPIO-H18 as input
+2025-11-19 11:05:14,035 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-19 11:05:14,036 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-19 11:05:31,145 INFO: Start logging
+2025-11-19 11:05:31,149 ERROR: Failed to set GPIO-H19 as input
+2025-11-19 11:05:31,149 ERROR: Failed to set GPIO-H18 as input
+2025-11-19 11:05:31,738 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-19 11:05:31,739 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-19 11:06:16,174 INFO: Start logging
+2025-11-19 11:06:16,177 ERROR: Failed to set GPIO-H19 as input
+2025-11-19 11:06:16,177 ERROR: Failed to set GPIO-H18 as input
+2025-11-19 11:06:16,779 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-19 11:06:16,781 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-19 11:07:52,409 INFO: Start logging
+2025-11-19 11:07:52,414 ERROR: Failed to set GPIO-H19 as input
+2025-11-19 11:07:52,414 ERROR: Failed to set GPIO-H18 as input
+2025-11-19 11:07:53,118 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-19 11:07:53,119 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-19 11:10:22,666 INFO: Start logging
+2025-11-19 11:10:22,669 ERROR: Failed to set GPIO-H19 as input
+2025-11-19 11:10:22,669 ERROR: Failed to set GPIO-H18 as input
+2025-11-19 11:10:23,293 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-19 11:10:23,294 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-19 11:10:42,338 INFO: Start logging
+2025-11-19 11:10:42,344 ERROR: Failed to set GPIO-H19 as input
+2025-11-19 11:10:42,344 ERROR: Failed to set GPIO-H18 as input
+2025-11-19 11:10:42,456 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-19 11:10:42,457 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-19 11:12:29,051 INFO: Start logging
+2025-11-19 11:12:29,054 ERROR: Failed to set GPIO-H19 as input
+2025-11-19 11:12:29,055 ERROR: Failed to set GPIO-H18 as input
+2025-11-19 11:12:29,165 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-19 11:12:29,166 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-20 17:55:19,449 INFO: Start logging
+2025-11-20 17:55:19,455 ERROR: Failed to set GPIO-H19 as input
+2025-11-20 17:55:19,456 ERROR: Failed to set GPIO-H18 as input
+2025-11-20 17:55:19,594 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-20 17:55:19,594 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-20 17:58:42,866 INFO: Start logging
+2025-11-20 17:58:42,869 ERROR: Failed to set GPIO-H19 as input
+2025-11-20 17:58:42,869 ERROR: Failed to set GPIO-H18 as input
+2025-11-20 17:58:42,983 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-20 17:58:42,983 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-20 17:59:09,300 INFO: Start logging
+2025-11-20 17:59:09,304 ERROR: Failed to set GPIO-H19 as input
+2025-11-20 17:59:09,304 ERROR: Failed to set GPIO-H18 as input
+2025-11-20 17:59:09,420 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-20 17:59:09,421 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-20 18:00:03,428 INFO: Start logging
+2025-11-20 18:00:03,432 ERROR: Failed to set GPIO-H19 as input
+2025-11-20 18:00:03,433 ERROR: Failed to set GPIO-H18 as input
+2025-11-20 18:00:03,550 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-20 18:00:03,551 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-20 18:04:24,472 INFO: Start logging
+2025-11-20 18:04:24,478 ERROR: Failed to set GPIO-H19 as input
+2025-11-20 18:04:24,478 ERROR: Failed to set GPIO-H18 as input
+2025-11-20 18:04:24,482 INFO: result []
+2025-11-20 18:04:24,603 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-20 18:04:24,605 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-20 18:05:34,003 INFO: Start logging
+2025-11-20 18:05:34,008 ERROR: Failed to set GPIO-H19 as input
+2025-11-20 18:05:34,008 ERROR: Failed to set GPIO-H18 as input
+2025-11-20 18:05:34,126 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-20 18:05:34,128 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-20 18:06:12,064 INFO: Start logging
+2025-11-20 18:06:12,067 ERROR: Failed to set GPIO-H19 as input
+2025-11-20 18:06:12,067 ERROR: Failed to set GPIO-H18 as input
+2025-11-20 18:06:12,179 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-20 18:06:36,089 INFO: Start logging
+2025-11-20 18:06:36,093 ERROR: Failed to set GPIO-H19 as input
+2025-11-20 18:06:36,094 ERROR: Failed to set GPIO-H18 as input
+2025-11-20 18:06:36,209 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-20 18:06:36,211 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-20 18:07:06,700 INFO: Log data:[]
+2025-11-21 08:58:16,938 INFO: Start logging
+2025-11-21 08:58:16,942 ERROR: Failed to set GPIO-H19 as input
+2025-11-21 08:58:16,942 ERROR: Failed to set GPIO-H18 as input
+2025-11-21 08:58:17,070 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-21 08:58:17,070 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-21 09:08:09,811 INFO: Start logging
+2025-11-21 09:08:09,814 ERROR: Failed to set GPIO-H19 as input
+2025-11-21 09:08:09,814 ERROR: Failed to set GPIO-H18 as input
+2025-11-21 09:08:09,935 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-21 09:08:09,936 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-21 09:14:21,361 INFO: Start logging
+2025-11-21 09:14:21,366 ERROR: Failed to set GPIO-H19 as input
+2025-11-21 09:14:21,367 ERROR: Failed to set GPIO-H18 as input
+2025-11-21 09:14:21,485 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-21 09:14:21,487 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-21 09:15:28,618 INFO: Start logging
+2025-11-21 09:15:28,621 ERROR: Failed to set GPIO-H19 as input
+2025-11-21 09:15:28,621 ERROR: Failed to set GPIO-H18 as input
+2025-11-21 09:15:28,748 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-21 09:15:28,749 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-21 09:15:59,207 INFO: Log data:[]
+2025-11-21 09:18:21,112 INFO: Start logging
+2025-11-21 09:18:21,118 ERROR: Failed to set GPIO-H19 as input
+2025-11-21 09:18:21,118 ERROR: Failed to set GPIO-H18 as input
+2025-11-21 09:18:21,235 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-21 09:18:21,237 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-21 09:18:51,749 INFO: Log data:[]
+2025-11-21 09:20:28,657 INFO: Start logging
+2025-11-21 09:20:28,662 ERROR: Failed to set GPIO-H19 as input
+2025-11-21 09:20:28,662 ERROR: Failed to set GPIO-H18 as input
+2025-11-21 09:20:28,784 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-21 09:20:28,785 ERROR: __init__: Unsupported callback API version: version 2.0 added a callback_api_version, see docs/migrations.rst for details
+2025-11-21 09:33:30,539 INFO: Start logging
+2025-11-21 09:33:30,543 ERROR: Failed to set GPIO-H19 as input
+2025-11-21 09:33:30,543 ERROR: Failed to set GPIO-H18 as input
+2025-11-21 09:34:19,279 INFO: Start logging
+2025-11-21 09:34:19,283 ERROR: Failed to set GPIO-H19 as input
+2025-11-21 09:34:19,284 ERROR: Failed to set GPIO-H18 as input
+2025-11-21 09:36:00,354 INFO: Start logging
+2025-11-21 09:36:00,359 ERROR: Failed to set GPIO-H19 as input
+2025-11-21 09:36:00,359 ERROR: Failed to set GPIO-H18 as input
+2025-11-21 09:37:07,629 INFO: Start logging
+2025-11-21 09:37:07,633 ERROR: Failed to set GPIO-H19 as input
+2025-11-21 09:37:07,633 ERROR: Failed to set GPIO-H18 as input
+2025-11-21 09:42:30,862 INFO: Start logging
+2025-11-21 09:42:30,866 ERROR: Failed to set GPIO-H19 as input
+2025-11-21 09:42:30,866 ERROR: Failed to set GPIO-H18 as input
+2025-11-21 09:43:01,407 INFO: Log data:[]
+2025-11-21 09:48:27,204 INFO: Start logging
+2025-11-21 09:48:27,209 ERROR: Failed to set GPIO-H19 as input
+2025-11-21 09:48:27,210 ERROR: Failed to set GPIO-H18 as input
+2025-11-21 09:50:51,931 INFO: Start logging
+2025-11-21 09:50:51,934 ERROR: Failed to set GPIO-H19 as input
+2025-11-21 09:50:51,934 ERROR: Failed to set GPIO-H18 as input
+2025-11-21 09:55:13,139 INFO: Start logging
+2025-11-21 09:55:13,146 ERROR: Failed to set GPIO-H19 as input
+2025-11-21 09:55:13,146 ERROR: Failed to set GPIO-H18 as input
+2025-11-21 09:56:01,993 INFO: Start logging
+2025-11-21 09:56:02,000 ERROR: Failed to set GPIO-H19 as input
+2025-11-21 09:56:02,000 ERROR: Failed to set GPIO-H18 as input
+2025-11-21 09:56:32,746 INFO: Log data:[{'device_id': 1, 'air_humidity': 'Error', 'Battery': 0, 'Signal': 'N/A', 'time': datetime.datetime(2025, 11, 21, 9, 56, 30, 735392), 'air_temperature': 'Error', 'gas_pm2.5': 'Error', 'water_level': 'Error', 'gas_o2': 20.9, 'gas_co2': 639.0, 'gas_co': 0.0, 'gas_h2s': 0.0, 'gas_ch4': 3.0, 'gas_ex': 0.0}]
+2025-11-21 09:57:02,748 INFO: Log data:[{'device_id': 1, 'air_humidity': 'Error', 'Battery': 0, 'Signal': 'N/A', 'time': datetime.datetime(2025, 11, 21, 9, 57, 0, 737805), 'air_temperature': 'Error', 'gas_pm2.5': 'Error', 'water_level': 'Error', 'gas_o2': 20.9, 'gas_co2': 639.0, 'gas_co': 0.0, 'gas_h2s': 0.0, 'gas_ch4': 3.0, 'gas_ex': 0.0}]
+2025-11-21 09:58:19,345 INFO: Start logging
+2025-11-21 09:58:19,349 ERROR: Failed to set GPIO-H19 as input
+2025-11-21 09:58:19,349 ERROR: Failed to set GPIO-H18 as input
+2025-11-21 09:58:49,833 INFO: Log data:[{'device_id': 1, 'air_humidity': 'Error', 'Battery': 0, 'Signal': 'N/A', 'time': datetime.datetime(2025, 11, 21, 9, 58, 47, 835072), 'air_temperature': 'Error', 'gas_pm2.5': 'Error', 'water_level': 'Error', 'gas_o2': 20.9, 'gas_co2': 639.0, 'gas_co': 0.0, 'gas_h2s': 0.0, 'gas_ch4': 3.0, 'gas_ex': 0.0}]
+2025-11-21 10:02:34,305 INFO: Start logging
+2025-11-21 10:02:34,309 ERROR: Failed to set GPIO-H19 as input
+2025-11-21 10:02:34,309 ERROR: Failed to set GPIO-H18 as input
+2025-11-21 10:03:04,947 INFO: Log data:[{'device_id': 1, 'air_humidity': 'Error', 'Battery': 0, 'Signal': 'N/A', 'time': datetime.datetime(2025, 11, 21, 10, 3, 2, 945903), 'air_temperature': 'Error', 'gas_pm2.5': 'Error', 'water_level': 'Error', 'gas_o2': 20.9, 'gas_co2': 639.0, 'gas_co': 0.0, 'gas_h2s': 0.0, 'gas_ch4': 3.0, 'gas_ex': 0.0}]
+2025-11-21 10:06:38,273 INFO: Start logging
+2025-11-21 10:06:38,280 ERROR: Failed to set GPIO-H19 as input
+2025-11-21 10:06:38,280 ERROR: Failed to set GPIO-H18 as input
+2025-11-21 10:07:08,879 INFO: Log data:[{'device_id': 1, 'air_humidity': 'Error', 'Battery': 0, 'Signal': 'N/A', 'time': datetime.datetime(2025, 11, 21, 10, 7, 6, 872680), 'air_temperature': 'Error', 'gas_pm2.5': 'Error', 'water_level': 'Error', 'gas_o2': 20.9, 'gas_co2': 639.0, 'gas_co': 0.0, 'gas_h2s': 0.0, 'gas_ch4': 3.0, 'gas_ex': 0.0}]
+2025-11-21 10:07:38,875 INFO: Log data:[{'device_id': 1, 'air_humidity': 'Error', 'Battery': 0, 'Signal': 'N/A', 'time': datetime.datetime(2025, 11, 21, 10, 7, 36, 874842), 'air_temperature': 'Error', 'gas_pm2.5': 'Error', 'water_level': 'Error', 'gas_o2': 20.9, 'gas_co2': 639.0, 'gas_co': 0.0, 'gas_h2s': 0.0, 'gas_ch4': 3.0, 'gas_ex': 0.0}]
+2025-11-21 10:40:55,324 INFO: Start logging
+2025-11-21 10:40:55,331 ERROR: Failed to set GPIO-H19 as input
+2025-11-21 10:40:55,332 ERROR: Failed to set GPIO-H18 as input
+2025-11-21 10:41:26,202 INFO: Log data:[{'device_id': 1, 'air_humidity': 'Error', 'Battery': 0, 'Signal': 'N/A', 'time': datetime.datetime(2025, 11, 21, 10, 41, 24, 205320), 'air_temperature': 'Error', 'gas_pm2.5': 'Error', 'water_level': 'Error', 'gas_o2': 20.9, 'gas_co2': 70.0, 'gas_co': 0.0, 'gas_h2s': 0.0, 'gas_ch4': 3.0, 'gas_ex': 0.0}]
+2025-11-21 10:41:56,207 INFO: Log data:[{'device_id': 1, 'air_humidity': 'Error', 'Battery': 0, 'Signal': 'N/A', 'time': datetime.datetime(2025, 11, 21, 10, 41, 54, 210301), 'air_temperature': 'Error', 'gas_pm2.5': 'Error', 'water_level': 'Error', 'gas_o2': 20.9, 'gas_co2': 70.0, 'gas_co': 0.0, 'gas_h2s': 0.0, 'gas_ch4': 3.0, 'gas_ex': 0.0}]

@@ -14,6 +14,14 @@ import modbus_tk.defines as cst
 from modbus_tk import modbus_rtu
 import serial
 
+########警报声模块########
+from PySide6.QtMultimedia import QSoundEffect
+from PySide6.QtCore import QUrl
+# 是否处于“红色”严重报警状态（只在 temp_alarm 时为 True）
+alarm_active = False
+audio_playing = False
+#########################
+
 #from gpiozero import LED
 
 title = "密閉空間監測系統"
@@ -107,6 +115,21 @@ def logging_init():
     logging.info("Start logging")
 
 
+from mqtt_client import MQTTClient
+def mqtt_client_init(broker,broker_port,topic):
+    print(f"Initializing MQTT Client to {broker}:{broker_port} with topic {topic}...")
+    mqtt_client = MQTTClient(broker,broker_port,topic)
+    mqtt_client.start()
+    return mqtt_client
+
+def add_msg_to_buffer(msg):
+    global databuffer
+    databuffer.append(json.loads(msg.payload))
+
+def set_global_status_network(value):
+    global status_network
+    status_network = value
+
 class mqtt:
     def __init__(self,ip,port,topic):
         try:
@@ -117,11 +140,11 @@ class mqtt:
             def on_connect(client, userdata, flags, rc):
                 if rc == 0:
                     logging.info(f"Connected to {self.ip}")
-                    #print(f"Connected to {self.ip}")
+                    print(f"Connected to {self.ip}")
                     self.connected = True
                 else:
                     logging.error(f"Failed to connect, return code {rc}")
-                    #print("Failed to connect, return code %d\n", rc)
+                    print("Failed to connect, return code %d\n", rc)
                 self.client.subscribe(self.topic)
 
             def on_message(client, userdata, msg):
@@ -159,14 +182,16 @@ class mqtt:
 
     def connect(self):
         try:
-            #print(1)
             self.client.connect(self.ip, self.port)
-            #print(2)
-            #self.client.loop_start()
-            #self.connected = True
+            timeout = 5 #等待連接的超時時間（秒）
+            start_time = time.time()
+            while not self.connected and (time.time() - start_time) < timeout:
+                time.sleep(0.1)
+            if not self.connected:
+                logging.warning("Connection timeout")
         except Exception as exc:
-            #print(inspect.stack()[0][3], ":", str(exc))
             logging.error(f"{inspect.stack()[0][3]}: {str(exc)}")
+
 
     def publish(self, topic, msg):
         if self.connected == False:
@@ -277,68 +302,68 @@ class data:
             print(inspect.stack()[0][3], ":", str(exc))
             logging.error(f"{inspect.stack()[0][3]}: {str(exc)}")
 
-    def bind(self,mqtt):
-        bind_button = GPIO.get_gpio_value('GPIO-H18')
-        #从mqtt消息获取bind状态
-        #if self.binded != True:
-        if bind_button == True and self.binded != True:
-            logging.info('Binded')
-            self.binded = True
-            #不需要发送bind mqtt消息
-            # try:
-            #     topic = "station/sensor_type_collection/" + station_ID
-            #     msg = {"station_id": station_ID, "location_name": location}
-            #     msg2 = []
-            #     for x in range(len(sensor)):
-            #         msg2 += [
-            #             {
-            #                 "sensor_type": sensor[x],
-            #                 "max_value_lv1": min_max_lv1[x][1],
-            #                 "max_value_lv2": min_max_lv2[x][1],
-            #                 "min_value_lv1": min_max_lv1[x][0],
-            #                 "min_value_lv2": min_max_lv2[x][0],
-            #                 "unit": str(unit[x]),
-            #             }
-            #         ]
-            #     msg = msg | {"sensor_type_detail": msg2}
-            #     msg = {"event": "bind", "content": msg}
-            #     if mqtt.publish(topic, json.dumps(msg, indent=4, separators=(",", ": "))):
-            #         logging.info('Binded sent')
-            #         #self.binded = True
-            # except Exception as exc:
-            #     print(inspect.stack()[0][3], ":", str(exc))
-            #     logging.error(f"{inspect.stack()[0][3]}: {str(exc)}")
+    # def bind(self,mqtt):
+    #     bind_button = GPIO.get_gpio_value('GPIO-H18')
+    #     #从mqtt消息获取bind状态
+    #     #if self.binded != True:
+    #     if bind_button == True and self.binded != True:
+    #         logging.info('Binded')
+    #         self.binded = True
+    #         #不需要发送bind mqtt消息
+    #         # try:
+    #         #     topic = "station/sensor_type_collection/" + station_ID
+    #         #     msg = {"station_id": station_ID, "location_name": location}
+    #         #     msg2 = []
+    #         #     for x in range(len(sensor)):
+    #         #         msg2 += [
+    #         #             {
+    #         #                 "sensor_type": sensor[x],
+    #         #                 "max_value_lv1": min_max_lv1[x][1],
+    #         #                 "max_value_lv2": min_max_lv2[x][1],
+    #         #                 "min_value_lv1": min_max_lv1[x][0],
+    #         #                 "min_value_lv2": min_max_lv2[x][0],
+    #         #                 "unit": str(unit[x]),
+    #         #             }
+    #         #         ]
+    #         #     msg = msg | {"sensor_type_detail": msg2}
+    #         #     msg = {"event": "bind", "content": msg}
+    #         #     if mqtt.publish(topic, json.dumps(msg, indent=4, separators=(",", ": "))):
+    #         #         logging.info('Binded sent')
+    #         #         #self.binded = True
+    #         # except Exception as exc:
+    #         #     print(inspect.stack()[0][3], ":", str(exc))
+    #         #     logging.error(f"{inspect.stack()[0][3]}: {str(exc)}")
 
-        #if bind_button == 0 and self.binded != False:
-        if bind_button == False and self.binded != False:
-            logging.info('Unbinded')
-            self.binded = False
-            #不需要发送unbind mqtt消息
-            # try:
-            #     topic = "station/sensor_type_collection/" + station_ID
-            #     msg = {"station_id": station_ID, "location_name": location}
+    #     #if bind_button == 0 and self.binded != False:
+    #     if bind_button == False and self.binded != False:
+    #         logging.info('Unbinded')
+    #         self.binded = False
+    #         #不需要发送unbind mqtt消息
+    #         # try:
+    #         #     topic = "station/sensor_type_collection/" + station_ID
+    #         #     msg = {"station_id": station_ID, "location_name": location}
 
-            #     msg2 = []
-            #     for x in range(len(sensor)):
-            #         msg2 += [
-            #             {
-            #                 "sensor_type": sensor[x],
-            #                 "max_value_lv1": min_max_lv1[x][1],
-            #                 "max_value_lv2": min_max_lv2[x][1],
-            #                 "min_value_lv1": min_max_lv1[x][0],
-            #                 "min_value_lv2": min_max_lv2[x][0],
-            #                 "unit": str(unit[x]),
-            #             }
-            #         ]
-            #     msg = msg | {"sensor_type_detail": msg2}
-            #     msg = {"event": "unbind", "content": msg}
-            #     #print(msg)
-            #     if mqtt.publish(topic, json.dumps(msg, indent=4, separators=(",", ": "))):
-            #         logging.info('Unbinded sent')
-            #         #self.binded = False
-            # except Exception as exc:
-            #     print(inspect.stack()[0][3], ":", str(exc))
-            #     logging.error(f"{inspect.stack()[0][3]}: {str(exc)}")
+    #         #     msg2 = []
+    #         #     for x in range(len(sensor)):
+    #         #         msg2 += [
+    #         #             {
+    #         #                 "sensor_type": sensor[x],
+    #         #                 "max_value_lv1": min_max_lv1[x][1],
+    #         #                 "max_value_lv2": min_max_lv2[x][1],
+    #         #                 "min_value_lv1": min_max_lv1[x][0],
+    #         #                 "min_value_lv2": min_max_lv2[x][0],
+    #         #                 "unit": str(unit[x]),
+    #         #             }
+    #         #         ]
+    #         #     msg = msg | {"sensor_type_detail": msg2}
+    #         #     msg = {"event": "unbind", "content": msg}
+    #         #     #print(msg)
+    #         #     if mqtt.publish(topic, json.dumps(msg, indent=4, separators=(",", ": "))):
+    #         #         logging.info('Unbinded sent')
+    #         #         #self.binded = False
+    #         # except Exception as exc:
+    #         #     print(inspect.stack()[0][3], ":", str(exc))
+    #         #     logging.error(f"{inspect.stack()[0][3]}: {str(exc)}")
 
     def get(self):
         """while databuffer:
@@ -396,6 +421,7 @@ class data:
             logging.error(f"{inspect.stack()[0][3]}: {str(exc)}")
 
 
+# 设置状态指示灯（网络&运行中）
 def set_status(window,icon,status):
     if status == True:
         exec("window.ui."+icon+".setStyleSheet('background-image: url(:/images/images/images/green-dot.png);''background-position:center;''background-repeat:no-repeat;')")
@@ -408,6 +434,14 @@ class GUI:
         self.display_page = 1
         self.display_list = None
         self.display_device = None
+
+        if audio_playing:
+            # 报警声音（只在红色严重报警时播放）
+            self.alarm_sound = QSoundEffect()
+            # 报警音路径（必须是 .wav），可以放在同目录下
+            self.alarm_sound.setSource(QUrl.fromLocalFile("alarm.wav"))
+            self.alarm_sound.setLoopCount(-2) # 一直循环
+            self.alarm_sound.setVolume(1)  # 0.0 ~ 1.0
 
     def switch_display_device(self,data):
         if data.value2:
@@ -426,6 +460,9 @@ class GUI:
         #print(self.display_list)
 
     def update(self,window,data):
+
+        global alarm_active # 控制全局报警声音状态（给 GUI 用）
+
         data.check()
         for x in range(Item_display):
             exec("window.ui.value_" + str(x) + ".setText(str(""))")
@@ -451,28 +488,73 @@ class GUI:
             for x in range(len(self.display_list)):
                 display_device = self.display_list[x][0]
                 display_sensor = self.display_list[x][1]
-                #print(min_max[display_sensor][0] , data.value2[display_device][sensor[display_sensor]], min_max[display_sensor][1])
+                
+                # 获取传感器值
+                sensor_value = data.value2[display_device][sensor[display_sensor]]
+                
+                # 检查是否为有效数值
+                try:
+                    sensor_value_float = float(sensor_value)
+                    is_valid = True
+                except (ValueError, TypeError):
+                    is_valid = False
+                
                 if sensor[display_sensor] == "water_level":
-                    #print("yes")
-                    if data.value2[display_device][sensor[display_sensor]] > min_max_lv2[display_sensor][1]:
-                        exec("window.ui.value_" + str(x) + ".setText('過高')")
-                    if min_max_lv2[display_sensor][0] <= data.value2[display_device][sensor[display_sensor]] <= min_max_lv2[display_sensor][1]:
-                        exec("window.ui.value_" + str(x) + ".setText('正常')")
+                    if not is_valid:
+                        exec("window.ui.value_" + str(x) + ".setText('Error')")
+                        exec("window.ui.value_" + str(x) + ".setStyleSheet(red + value_font)")
+                    else:
+                        if sensor_value_float > min_max_lv2[display_sensor][1]:
+                            exec("window.ui.value_" + str(x) + ".setText('過高')")
+                        elif min_max_lv2[display_sensor][0] <= sensor_value_float <= min_max_lv2[display_sensor][1]:
+                            exec("window.ui.value_" + str(x) + ".setText('正常')")
+                        else:
+                            exec("window.ui.value_" + str(x) + ".setText('過低')")
                 else:
-                    exec("window.ui.value_" + str(x) + ".setText(str(data.value2["+ str(display_device) +"][sensor["+ str(display_sensor) +"]]))")
+                    exec("window.ui.value_" + str(x) + ".setText(str(sensor_value))")
+                
                 exec("window.ui.unit_" + str(x) + ".setText(unit[" + str(display_sensor) + "])")
                 exec("window.ui.name_" + str(x) + ".setText(display_name[" + str(display_sensor) + "])")
                 exec("window.ui.device_" + str(x) + ".setText(str(data.value2["+ str(display_device) +"]['device_id'])+'號機')")
-                try:
-                    #print(min_max[display_sensor][0] , data.value2[display_device][sensor[display_sensor]], min_max[display_sensor][1])
-                    if min_max_lv1[display_sensor][0] <= data.value2[display_device][sensor[display_sensor]] <= min_max_lv1[display_sensor][1]:
-                        exec("window.ui.value_" + str(x) + ".setStyleSheet(green + value_font)")
-                    elif min_max_lv2[display_sensor][0] <= data.value2[display_device][sensor[display_sensor]] <= min_max_lv2[display_sensor][1]:
-                        exec("window.ui.value_" + str(x) + ".setStyleSheet(yellow + value_font)")
-                    else:
-                        exec("window.ui.value_" + str(x) + ".setStyleSheet(red + value_font)")
-                except:
+                
+                # 设置颜色
+                if not is_valid:
                     exec("window.ui.value_" + str(x) + ".setStyleSheet(red + value_font)")
+                else:
+                    try:
+                        if min_max_lv1[display_sensor][0] <= sensor_value_float <= min_max_lv1[display_sensor][1]:
+                            exec("window.ui.value_" + str(x) + ".setStyleSheet(green + value_font)")
+                        elif min_max_lv2[display_sensor][0] <= sensor_value_float <= min_max_lv2[display_sensor][1]:
+                            exec("window.ui.value_" + str(x) + ".setStyleSheet(yellow + value_font)")
+                        else:
+                            exec("window.ui.value_" + str(x) + ".setStyleSheet(red + value_font)")
+                    except:
+                        exec("window.ui.value_" + str(x) + ".setStyleSheet(red + value_font)")
+            # for x in range(len(self.display_list)):
+            #     display_device = self.display_list[x][0]
+            #     display_sensor = self.display_list[x][1]
+            #     #print(min_max[display_sensor][0] , data.value2[display_device][sensor[display_sensor]], min_max[display_sensor][1])
+            #     if sensor[display_sensor] == "water_level":
+            #         #print("yes")
+            #         if data.value2[display_device][sensor[display_sensor]] > min_max_lv2[display_sensor][1]:
+            #             exec("window.ui.value_" + str(x) + ".setText('過高')")
+            #         if min_max_lv2[display_sensor][0] <= data.value2[display_device][sensor[display_sensor]] <= min_max_lv2[display_sensor][1]:
+            #             exec("window.ui.value_" + str(x) + ".setText('正常')")
+            #     else:
+            #         exec("window.ui.value_" + str(x) + ".setText(str(data.value2["+ str(display_device) +"][sensor["+ str(display_sensor) +"]]))")
+            #     exec("window.ui.unit_" + str(x) + ".setText(unit[" + str(display_sensor) + "])")
+            #     exec("window.ui.name_" + str(x) + ".setText(display_name[" + str(display_sensor) + "])")
+            #     exec("window.ui.device_" + str(x) + ".setText(str(data.value2["+ str(display_device) +"]['device_id'])+'號機')")
+            #     try:
+            #         #print(min_max[display_sensor][0] , data.value2[display_device][sensor[display_sensor]], min_max[display_sensor][1])
+            #         if min_max_lv1[display_sensor][0] <= data.value2[display_device][sensor[display_sensor]] <= min_max_lv1[display_sensor][1]:
+            #             exec("window.ui.value_" + str(x) + ".setStyleSheet(green + value_font)")
+            #         elif min_max_lv2[display_sensor][0] <= data.value2[display_device][sensor[display_sensor]] <= min_max_lv2[display_sensor][1]:
+            #             exec("window.ui.value_" + str(x) + ".setStyleSheet(yellow + value_font)")
+            #         else:
+            #             exec("window.ui.value_" + str(x) + ".setStyleSheet(red + value_font)")
+            #     except:
+            #         exec("window.ui.value_" + str(x) + ".setStyleSheet(red + value_font)")
 
             """for x in range(len(sensor)):
                 #print(sensor[x])
@@ -505,10 +587,22 @@ class GUI:
                         exec("window.ui.value_" + str(x) + ".setStyleSheet(red + value_font)")
                 else:
                     exec("window.ui.value_" + str(x) + ".setStyleSheet(black + value_font)")"""
-        set_status(window,'icon',status_network)
-        set_status(window,'icon_2',data.binded)
+        set_status(window,'icon',status_network) #网络连接状态
+        set_status(window,'icon_2',data.binded) #绑定状态
         update_alarm(data)
-
+        if audio_playing:
+            if alarm_active:
+                # # 整个窗口背景变红
+                # window.setStyleSheet("background-color: red;")
+                # 播放报警声（避免每次重复 play）
+                if not self.alarm_sound.isPlaying():
+                    self.alarm_sound.play()
+            else:
+                # # 恢复默认背景
+                # window.setStyleSheet("")
+                # 停止报警声
+                if self.alarm_sound.isPlaying():
+                    self.alarm_sound.stop()
 
 class status_led:
     def __init__(self) -> None:
@@ -643,6 +737,9 @@ class status_led:
             self.find_port()
 
 def update_alarm(data):
+
+    global alarm_active   # 控制全局报警状态（给 GUI 用）
+
     TOtime = None
     temp_alert = False
     temp_alarm = False
@@ -664,25 +761,29 @@ def update_alarm(data):
             #GPIO.on('GPIO-H19')
             '''GPIO.set_output("GPIO-H19")
             GPIO.set_gpio_value("GPIO-H19", 0)'''
-            Status_led.alarm()
+            # Status_led.alarm()
             """if data.binded:
                 Status_led.alarm()"""
             #print(1)
+            alarm_active = True          # 二级警报 → 红色报警 + 声音
         elif temp_alert:
             TOtime  = datetime.datetime.now()
-            Status_led.alert()
-            #print(2)
+            # Status_led.alert()
+            # print(2)
+            alarm_active = False         # 只是黄灯，不要声音
         elif TOtime  == None or (nowtime.timestamp() - TOtime.timestamp()) > AlarmTimeOut:
-            Status_led.normal()
-            #print(3)
+            # Status_led.normal()
+            # print(3)
+            alarm_active = False         # 恢复正常状态
         """elif(nowtime.timestamp() - TOtime4.timestamp()) > TimeOut:
             #GPIO.off('GPIO-H19')
             '''GPIO.set_gpio_value("GPIO-H19", 1)
             GPIO.set_input("GPIO-H19")'''
             Alarm.normal()"""
     else:
-        Status_led.standby()
-        print(4)
+        # Status_led.standby()
+        # print(4)
+        alarm_active = False
         
     """for x in data.value2:
         for y in range(len(sensor)):
