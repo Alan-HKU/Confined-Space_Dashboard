@@ -34,6 +34,7 @@ class MQTTClient:
     def on_connect(self, client, userdata, flags, rc):
         if rc == 0:
             print("Connected to MQTT Broker!")
+            funciton.set_global_status_network(True)
             # 重新订阅之前的主题
             self.client.subscribe(self.topic)
         else:
@@ -42,6 +43,7 @@ class MQTTClient:
     def on_message(self, client, userdata, msg):
         #可以在这里处理接收到的消息
         print(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
+        funciton.set_global_status_network(True)
         funciton.add_msg_to_buffer(msg)
         # if (msg.topic == self.topic_gateway):
             # parse_message_mqtt.parse_message(msg)
@@ -57,6 +59,7 @@ class MQTTClient:
                 break
             except Exception as e:
                 print(f"MQTT connection error: {e}, attempting to reconnect...")
+                funciton.set_global_status_network(False)
                 print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             time.sleep(10)  # 等待5秒后重试
 

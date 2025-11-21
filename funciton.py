@@ -500,9 +500,18 @@ class GUI:
                     is_valid = False
                 
                 if sensor[display_sensor] == "water_level":
-                    if not is_valid:
+                    # 掉线/无数据：显示 "-"
+                    if sensor_value in (None, "", "-", "None"):
+                        exec("window.ui.value_" + str(x) + ".setText('-')")
+                        # 用透明/默认颜色即可，看你原来需求
+                        exec("window.ui.value_" + str(x) + ".setStyleSheet(red + value_font)")
+                    
+                    # 显示 Error
+                    elif not is_valid:
                         exec("window.ui.value_" + str(x) + ".setText('Error')")
                         exec("window.ui.value_" + str(x) + ".setStyleSheet(red + value_font)")
+                    
+                    # 显示 過高 / 正常 / 過低
                     else:
                         if sensor_value_float > min_max_lv2[display_sensor][1]:
                             exec("window.ui.value_" + str(x) + ".setText('過高')")
@@ -519,7 +528,8 @@ class GUI:
                 
                 # 设置颜色
                 if not is_valid:
-                    exec("window.ui.value_" + str(x) + ".setStyleSheet(red + value_font)")
+                    if sensor[display_sensor] != "water_level":
+                        exec("window.ui.value_" + str(x) + ".setStyleSheet(red + value_font)")
                 else:
                     try:
                         if min_max_lv1[display_sensor][0] <= sensor_value_float <= min_max_lv1[display_sensor][1]:
@@ -530,6 +540,9 @@ class GUI:
                             exec("window.ui.value_" + str(x) + ".setStyleSheet(red + value_font)")
                     except:
                         exec("window.ui.value_" + str(x) + ".setStyleSheet(red + value_font)")
+
+
+
             # for x in range(len(self.display_list)):
             #     display_device = self.display_list[x][0]
             #     display_sensor = self.display_list[x][1]
@@ -948,15 +961,15 @@ def all_init():
     logging_init()
     time_init()
     global GPIO
-    GPIO = gpio()
-    GPIO.off('GPIO-H19')
-    '''GPIO.set_output('GPIO-H19')
-    GPIO.set_gpio_value('GPIO-H19', 1)'''
-    GPIO.set_input('GPIO-H18')
-    '''if GPIO.set_gpio_value('GPIO-H19', GPIO.OUTPUT_MODE):
-        print("GPIO-H19 set to output mode.")
-    else:
-        print("Failed to set GPIO-H19 to output mode.")
-    GPIO.set_gpio_value('GPIO-H19', 1)'''
-    global Status_led
-    Status_led = status_led()
+    # GPIO = gpio()
+    # GPIO.off('GPIO-H19')
+    # '''GPIO.set_output('GPIO-H19')
+    # GPIO.set_gpio_value('GPIO-H19', 1)'''
+    # GPIO.set_input('GPIO-H18')
+    # '''if GPIO.set_gpio_value('GPIO-H19', GPIO.OUTPUT_MODE):
+    #     print("GPIO-H19 set to output mode.")
+    # else:
+    #     print("Failed to set GPIO-H19 to output mode.")
+    # GPIO.set_gpio_value('GPIO-H19', 1)'''
+    # global Status_led
+    # Status_led = status_led()
