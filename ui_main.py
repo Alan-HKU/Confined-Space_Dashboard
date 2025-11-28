@@ -1084,7 +1084,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_5.setContentsMargins(0, 0, 0, 0)
         self.creditsLabel = QLabel(self.bottomBar)
         self.creditsLabel.setObjectName("creditsLabel")
-        self.creditsLabel.setMaximumSize(QSize(200, 35))
+        self.creditsLabel.setMaximumSize(QSize(400, 35))
         font4 = QFont()
         font4.setFamilies(["Segoe UI"])
         font4.setPointSize(14)
