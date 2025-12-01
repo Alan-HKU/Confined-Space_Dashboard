@@ -488,7 +488,12 @@ class GUI:
             for x in range(len(self.display_list)):
                 display_device = self.display_list[x][0]
                 display_sensor = self.display_list[x][1]
-                
+
+                battery_value = data.value2[display_device].get('Battery', '-')
+                signal_value = data.value2[display_device].get('Signal', 'N/A')
+
+                # print(f"设备 {data.value2[display_device]['device_id']} 的电池: {battery_value}%")
+            
                 # 获取传感器值
                 sensor_value = data.value2[display_device][sensor[display_sensor]]
                 
@@ -524,7 +529,8 @@ class GUI:
                 
                 exec("window.ui.unit_" + str(x) + ".setText(unit[" + str(display_sensor) + "])")
                 exec("window.ui.name_" + str(x) + ".setText(display_name[" + str(display_sensor) + "])")
-                exec("window.ui.device_" + str(x) + ".setText(str(data.value2["+ str(display_device) +"]['device_id'])+'號機')")
+                # exec("window.ui.device_" + str(x) + ".setText(str(data.value2["+ str(display_device) +"]['device_id'])+'號機')")
+                exec("window.ui.device_" + str(x) + ".setText(str(data.value2["+ str(display_device) +"]['device_id'])+'號機 🔋'+str(data.value2["+ str(display_device) +"].get('Battery','-'))+'%')")
                 
                 # 设置颜色
                 if not is_valid:
