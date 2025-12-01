@@ -530,8 +530,10 @@ class GUI:
                 exec("window.ui.unit_" + str(x) + ".setText(unit[" + str(display_sensor) + "])")
                 exec("window.ui.name_" + str(x) + ".setText(display_name[" + str(display_sensor) + "])")
                 # exec("window.ui.device_" + str(x) + ".setText(str(data.value2["+ str(display_device) +"]['device_id'])+'號機')")
-                exec("window.ui.device_" + str(x) + ".setText(str(data.value2["+ str(display_device) +"]['device_id'])+'號機 🔋'+str(data.value2["+ str(display_device) +"].get('Battery','-'))+'%')")
-                
+                if battery_value > 25:
+                    exec("window.ui.device_" + str(x) + ".setText(str(data.value2["+ str(display_device) +"]['device_id'])+'號機 🔋'+str(data.value2["+ str(display_device) +"].get('Battery','-'))+'%')")
+                else:
+                    exec("window.ui.device_" + str(x) + ".setText(str(data.value2["+ str(display_device) +"]['device_id'])+'號機 🪫'+str(data.value2["+ str(display_device) +"].get('Battery','-'))+'%')")
                 # 设置颜色
                 if not is_valid:
                     if sensor[display_sensor] != "water_level":
