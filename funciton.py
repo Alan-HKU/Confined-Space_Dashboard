@@ -3,6 +3,8 @@ import logging
 import time
 import inspect
 import datetime
+
+import psutil
 from main import *
 import configparser
 import json
@@ -54,6 +56,9 @@ status_network  = False
 status_485 = False
 
 databuffer = []
+
+#创建一个记录电池电量的字典
+battery_record = {}
 
 def get(data):
     # print( globals()[data])
@@ -462,6 +467,7 @@ class GUI:
     def update(self,window,data):
 
         global alarm_active # 控制全局报警声音状态（给 GUI 用）
+        global battery_record # 记录电池电量
 
         data.check()
         for x in range(Item_display):
@@ -488,9 +494,16 @@ class GUI:
             for x in range(len(self.display_list)):
                 display_device = self.display_list[x][0]
                 display_sensor = self.display_list[x][1]
-                
+
+                battery_value = data.value2[display_device].get('Battery', '-')
+                signal_value = data.value2[display_device].get('Signal', 'N/A')
+
+                # print(f"设备 {data.value2[display_device]['device_id']} 的电池: {battery_value}%")
+            
                 # 获取传感器值
                 sensor_value = data.value2[display_device][sensor[display_sensor]]
+                device_id = data.value2[display_device]['device_id']
+                print(f"device{device_id}")
                 
                 # 检查是否为有效数值
                 try:
@@ -525,7 +538,11 @@ class GUI:
                 exec("window.ui.unit_" + str(x) + ".setText(unit[" + str(display_sensor) + "])")
                 exec("window.ui.name_" + str(x) + ".setText(display_name[" + str(display_sensor) + "])")
                 exec("window.ui.device_" + str(x) + ".setText(str(data.value2["+ str(display_device) +"]['device_id'])+'號機')")
-                
+                # if battery_value > 25:
+                #     exec("window.ui.device_" + str(x) + ".setText(str(data.value2["+ str(display_device) +"]['device_id'])+'號機 🔋'+str(data.value2["+ str(display_device) +"].get('Battery','-'))+'%')")
+                # else:
+                #     exec("window.ui.device_" + str(x) + ".setText(str(data.value2["+ str(display_device) +"]['device_id'])+'號機 🪫'+str(data.value2["+ str(display_device) +"].get('Battery','-'))+'%')")
+                battery_record[device_id] = battery_value
                 # 设置颜色
                 if not is_valid:
                     if sensor[display_sensor] != "water_level":
@@ -587,7 +604,30 @@ class GUI:
                 exec("window.ui.value_" + str(x) + ".setText(str(data.value[" + str(x) + "]))")"""
         
         time = datetime.datetime.now()
-        window.ui.creditsLabel.setText(str(time.strftime("%d/%m/%y %H:%M:%S")))
+        # window.ui.creditsLabel.setText(str(time.strftime("%d/%m/%y %H:%M:%S")))
+        # 取得本機電量 
+        battery = psutil.sensors_battery()
+        local_info = ""
+        if battery:
+            local_info = ("⚡️🔋" if battery.power_plugged else ("🔋" if battery.percent > 25 else "🪫")) + str(int(round(battery.percent))) + "%"
+
+        if battery_record:
+            battery_info = " | ".join([f"{device_id}號機 {'🔋' if battery > 25 else '🪫'}{battery}%" for device_id, battery in battery_record.items()])
+            
+            if local_info:  # 加上本機電量
+                window.ui.creditsLabel.setText(time.strftime("%d/%m/%y %H:%M:%S") + "  " + local_info + " | Data Logger: " + battery_info)
+            else:
+                window.ui.creditsLabel.setText(time.strftime("%d/%m/%y %H:%M:%S") + "  " + battery_info)
+        else:
+            if local_info:
+                window.ui.creditsLabel.setText(time.strftime("%d/%m/%y %H:%M:%S") + "  " + local_info)
+            else:
+                window.ui.creditsLabel.setText(time.strftime("%d/%m/%y %H:%M:%S"))
+        # if battery_record:
+        #     battery_info = " | ".join([f"{device_id}號機 {'🔋' if battery > 25 else '🪫'}{battery}%" for device_id, battery in battery_record.items()])
+        #     window.ui.creditsLabel.setText(time.strftime("%d/%m/%y %H:%M:%S") + "  " + battery_info)
+        # else:
+        #     window.ui.creditsLabel.setText(str(time.strftime("%d/%m/%y %H:%M:%S")))
         """if data.value2:
             for x in range(len(sensor)):
                 if sensor[x] in data.value2[self.display_device]:
