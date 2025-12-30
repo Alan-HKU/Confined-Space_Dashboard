@@ -214,8 +214,14 @@ class mqtt:
             else:
                 #print(f"Failed to send message to topic {topic}")
                 logging.error(f"Failed to send message to topic {topic}")
-                status_network  = False
-                return False
+                result = self.client.publish(topic, msg)
+                status = result[0]
+                if status == 0:
+                    status_network  = True
+                    return True
+                else:
+                    status_network  = False
+                    return False
 
 
 class data:
