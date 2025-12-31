@@ -206,7 +206,7 @@ class mqtt:
             result = self.client.publish(topic, msg)
             # result: [0, 1]
             status = result[0]
-            #print(status)
+            # print(status)
             if status == 0:
                 #print(f"Send `{msg}` to topic `{topic}`")
                 status_network  = True
@@ -228,6 +228,7 @@ class data:
     def __init__(self,mqtt) -> None:
         self.started = False
         self.binded = None
+        self.binded_time = None
         #self.value = ["-"]*10
         self.value2 = []
         self.TOtime = [None] * 3
@@ -388,13 +389,19 @@ class data:
             #print(msg["device_ID"])
             #增加检测bind与unbind状态的信息，如果不是该数据则向下执行
             if "status" in msg:
+                self.binded_time = time_now
                 if msg["status"] == "bind":
                     self.binded = True
                     continue
                 elif msg["status"] == "unbind":
                     self.binded = False
                     continue
-            
+
+            # 检查 msg 是否包含 device_id,如果没有就跳过或记录错误
+            if "device_id" not in msg:
+                logging.warning(f"Received message without device_id: {msg}")
+                continue
+
             i = next((i for i, item in enumerate(self.value2) if item["device_id"] == msg["device_id"]), None)
             msg.update({"time": time_now})
             #print(i)
@@ -438,6 +445,15 @@ def set_status(window,icon,status):
         exec("window.ui."+icon+".setStyleSheet('background-image: url(:/images/images/images/green-dot.png);''background-position:center;''background-repeat:no-repeat;')")
     else:
         exec("window.ui."+icon+".setStyleSheet('background-image: url(:/images/images/images/red-dot.png);''background-position:center;''background-repeat:no-repeat;')")
+
+# 设置状态指示灯（绑定状态）
+def set_status_bind(window, data):
+    if data.binded == True:
+        exec("window.ui."+'icon_2'+".setStyleSheet('background-image: url(:/images/images/images/green-dot.png);''background-position:center;''background-repeat:no-repeat;')")
+    else:
+        exec("window.ui."+'icon_2'+".setStyleSheet('background-image: url(:/images/images/images/red-dot.png);''background-position:center;''background-repeat:no-repeat;')")
+
+
 
 class GUI:
     def __init__(self) -> None:
@@ -617,9 +633,37 @@ class GUI:
         if battery:
             local_info = ("⚡️🔋" if battery.power_plugged else ("🔋" if battery.percent > 25 else "🪫")) + str(int(round(battery.percent))) + "%"
 
+        print("battery_record:", battery_record)
+        print("***************************************************************************************")   
+
         if battery_record:
-            battery_info = " | ".join([f"{device_id}號機 {'🔋' if battery > 25 else '🪫'}{battery}%" for device_id, battery in battery_record.items()])
+            parts = []
+            for device_id, battery in battery_record.items():
+                # 检查 battery 是否为数字
+                if isinstance(battery, (int, float)):
+                    icon = '🔋' if battery > 25 else '🪫'
+                    parts.append(f"{device_id}號機 {icon}{battery}%")
+                else:
+                    # battery 是 '-' 等非数字值
+                    parts.append(f"{device_id}號機 {battery}")
             
+            battery_info = " | ".join(parts)
+     
+        # if battery_record:
+        #     # 检测battery_record中的battery是否为数字
+        #     try:
+        #         battery = float(battery)
+        #         battery_info = " | ".join([f"{device_id}號機 {'🔋' if battery > 25 else '🪫'}{battery}%" for device_id, battery in battery_record.items() if isinstance(battery, (int, float))])
+        #     except (ValueError, TypeError):
+        #         battery_info = " | ".join([f"{device_id}號機 🪫{battery}%" for device_id, battery in battery_record.items()])
+
+            # battery_info = " | ".join([f"{device_id}號機 {'🔋' if battery > 25 else '🪫'}{battery}%" for device_id, battery in battery_record.items()])
+
+            # # 检查 battery 是否为数字
+            #     battery_info = " | ".join([
+            #         f"{device_id}號機 {'🔋' if (isinstance(battery, (int, float)) and battery > 25) else '🪫'}{battery}%" 
+            #         for device_id, battery in battery_record.items()
+            #     ])
             if local_info:  # 加上本機電量
                 window.ui.creditsLabel.setText(time.strftime("%d/%m/%y %H:%M:%S") + "  " + local_info + " | Data Logger: " + battery_info)
             else:
@@ -647,6 +691,9 @@ class GUI:
                 else:
                     exec("window.ui.value_" + str(x) + ".setStyleSheet(black + value_font)")"""
         set_status(window,'icon',status_network) #网络连接状态
+        if data.binded_time is not None:
+            if (datetime.datetime.now() - data.binded_time).total_seconds() > 10:
+                data.binded = False
         set_status(window,'icon_2',data.binded) #绑定状态
         update_alarm(data)
         if audio_playing:

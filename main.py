@@ -175,7 +175,7 @@ if __name__ == "__main__":
     private_mqtt = mqtt_client_init(get("private_broker"),get("private_broker_port"),get("private_topic"))
     print(f"Private MQTT Initialized to {get('private_broker')}:{get('private_broker_port')} Topic: {get('private_topic')}")
     public_mqtt = mqtt_client_init(get("public_broker"),get("public_broker_port"),get("private_topic"))
-    print(f"Public MQTT Initialized to {get('public_broker')}:{get('public_broker_port')} Topic: {get('private_topic')}")
+    print(f"Public MQTT Initialized to {get('public_broker')}:{get('public_broker_port')} Topic: {get('public_topic')}")
     print("MQTT Clients Initialized")
     data=data(public_mqtt)
     GUI=GUI()
@@ -206,6 +206,9 @@ if __name__ == "__main__":
     timer6 = QTimer()
     timer6.timeout.connect(lambda: GUI.switch_display_device(data))
     timer6.start(get("DisplaySwitchTime"))
+    timer7 = QTimer() 
+    timer7.timeout.connect(lambda: set_status_bind(window,data))
+    timer7.start(get("GUIReflashTime"))
     #取消定時綁定，以mqtt代替
     # timer7 = QTimer()
     # timer7.timeout.connect(lambda: data.bind(public_mqtt))
