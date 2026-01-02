@@ -639,6 +639,9 @@ class GUI:
         if battery_record:
             parts = []
             for device_id, battery in battery_record.items():
+                # 0號機不加進去
+                if device_id == 0 or str(device_id) == "0":
+                    continue
                 # 检查 battery 是否为数字
                 if isinstance(battery, (int, float)):
                     icon = '🔋' if battery > 25 else '🪫'
