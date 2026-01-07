@@ -21,7 +21,6 @@ from PySide6.QtMultimedia import QSoundEffect
 from PySide6.QtCore import QUrl
 # 是否处于“红色”严重报警状态（只在 temp_alarm 时为 True）
 alarm_active = False
-audio_playing = False
 #########################
 
 #from gpiozero import LED
@@ -466,8 +465,10 @@ class GUI:
             # 报警声音（只在红色严重报警时播放）
             self.alarm_sound = QSoundEffect()
             # 报警音路径（必须是 .wav），可以放在同目录下
-            self.alarm_sound.setSource(QUrl.fromLocalFile("alarm.wav"))
-            self.alarm_sound.setLoopCount(-2) # 一直循环
+            # self.alarm_sound.setSource(QUrl.fromLocalFile("alarm.wav"))
+            alarm_path = os.path.join(os.path.dirname(__file__), "alarm.wav")
+            self.alarm_sound.setSource(QUrl.fromLocalFile(alarm_path))
+            self.alarm_sound.setLoopCount(-1) # 一直循环
             self.alarm_sound.setVolume(1)  # 0.0 ~ 1.0
 
     def switch_display_device(self,data):
