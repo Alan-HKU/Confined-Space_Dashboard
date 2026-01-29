@@ -63,7 +63,7 @@ class MQTTClient:
                 print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             time.sleep(10)  # 等待5秒后重试
 
-    def publish(self, message, topic=None):
+    def publish(self, topic=None, message=None):
         try:
             print(f"Sent to topic `{topic}`")
             result = self.client.publish(topic, message)
