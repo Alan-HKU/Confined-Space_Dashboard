@@ -1324,11 +1324,28 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_5.addWidget(self.memory)
 
+        # ── 本地 MQTT (private broker) ───────────────────
+        self.status_private = QLabel(self.bottomBar)
+        self.status_private.setObjectName(u"status_private")
+        self.status_private.setMaximumSize(QSize(100, 16777215))
+        self.status_private.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+        self.status_private.setStyleSheet(u"font: 16pt;")
+        self.horizontalLayout_5.addWidget(self.status_private)
+
+        self.icon_private = QLabel(self.bottomBar)
+        self.icon_private.setObjectName(u"icon_private")
+        self.icon_private.setMaximumSize(QSize(25, 16777215))
+        self.icon_private.setStyleSheet(u"background-image: url(:/images/images/images/red-dot.png);\n"
+"background-position:center;\n"
+"background-repeat:no-repeat;")
+        self.horizontalLayout_5.addWidget(self.icon_private)
+
+        # ── 網絡 MQTT (public broker) ────────────────────
         self.status = QLabel(self.bottomBar)
         self.status.setObjectName(u"status")
         self.status.setMaximumSize(QSize(100, 16777215))
         self.status.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
-
+        self.status.setStyleSheet(u"font: 16pt;")
         self.horizontalLayout_5.addWidget(self.status)
 
         self.icon = QLabel(self.bottomBar)
@@ -1340,15 +1357,15 @@ class Ui_MainWindow(object):
 "background-position:center;\n"
 "background-repeat:no-repeat;")
         self.icon.setInputMethodHints(Qt.ImhNone)
-
         self.horizontalLayout_5.addWidget(self.icon)
 
+        # ── 運行中（綁定狀態）────────────────────────────
         self.status_2 = QLabel(self.bottomBar)
         self.status_2.setObjectName(u"status_2")
         self.status_2.setMaximumSize(QSize(100, 16777215))
         self.status_2.setLayoutDirection(Qt.LeftToRight)
         self.status_2.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
-
+        self.status_2.setStyleSheet(u"font: 16pt;")
         self.horizontalLayout_5.addWidget(self.status_2)
 
         self.icon_2 = QLabel(self.bottomBar)
@@ -1357,8 +1374,8 @@ class Ui_MainWindow(object):
         self.icon_2.setStyleSheet(u"background-image: url(:/images/images/images/red-dot.png);\n"
 "background-position:center;\n"
 "background-repeat:no-repeat;")
-
         self.horizontalLayout_5.addWidget(self.icon_2)
+
 
         self.version = QLabel(self.bottomBar)
         self.version.setObjectName(u"version")
@@ -1475,4 +1492,3 @@ class Ui_MainWindow(object):
         self.icon_2.setText("")
         self.version.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:14pt;\">Version:</span></p></body></html>", None))
     # retranslateUi
-
