@@ -5,6 +5,7 @@ import json
 import os
 import configparser
 import ctypes
+import threading
 
 import psutil
 from main import *
@@ -39,6 +40,7 @@ status_private    = False   # private MQTT connection
 status_public     = False   # public MQTT connection
 databuffer        = []
 battery_record    = {}
+_alarm_flash_state = False  # current border flash state
 
 
 # ─────────────────────────────────────────────
@@ -260,10 +262,12 @@ class GUI:
 
         if audio_playing:
             self.alarm_sound = QSoundEffect()
-            alarm_path = os.path.join(os.path.dirname(__file__), "alarm.wav")
+            sound_file = globals().get("alarm_sound_file", "alarm.wav")
+            alarm_path = os.path.join(os.path.dirname(__file__), sound_file)
             self.alarm_sound.setSource(QUrl.fromLocalFile(alarm_path))
             self.alarm_sound.setLoopCount(QSoundEffect.Infinite.value)
             self.alarm_sound.setVolume(1.0)
+        self._flash_state = False
 
     def _cache_widgets(self, window):
         if self._widgets_cached:
@@ -398,13 +402,30 @@ class GUI:
                 data_obj.binded = False
         set_status(window, "icon_2", bool(data_obj.binded))
 
-        # Alarm audio
+
+
+        # Alarm audio + border flash
         update_alarm(data_obj)
         if audio_playing:
             if alarm_active and not self.alarm_sound.isPlaying():
                 self.alarm_sound.play()
             elif not alarm_active and self.alarm_sound.isPlaying():
                 self.alarm_sound.stop()
+
+        # Red border flash on alarm
+        # We set the style on the MainWindow (QMainWindow) itself so we don't
+        # interfere with bgApp's global QSS background-color rule.
+        flash_enabled = globals().get("alarm_border_flash", False)
+        if flash_enabled and alarm_active:
+            self._flash_state = not self._flash_state
+            border_color = "red" if self._flash_state else "transparent"
+            window.setStyleSheet(
+                f"QMainWindow {{ border: 6px solid {border_color}; }}"
+            )
+        else:
+            if self._flash_state:          # only clear once when alarm ends
+                self._flash_state = False
+                window.setStyleSheet("")
 
 
 # ─────────────────────────────────────────────

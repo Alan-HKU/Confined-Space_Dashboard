@@ -1340,6 +1340,7 @@ class Ui_MainWindow(object):
 "background-repeat:no-repeat;")
         self.horizontalLayout_5.addWidget(self.icon_private)
 
+
         # ── 網絡 MQTT (public broker) ────────────────────
         self.status = QLabel(self.bottomBar)
         self.status.setObjectName(u"status")
@@ -1358,6 +1359,7 @@ class Ui_MainWindow(object):
 "background-repeat:no-repeat;")
         self.icon.setInputMethodHints(Qt.ImhNone)
         self.horizontalLayout_5.addWidget(self.icon)
+
 
         # ── 運行中（綁定狀態）────────────────────────────
         self.status_2 = QLabel(self.bottomBar)

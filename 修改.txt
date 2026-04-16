@@ -1,0 +1,13 @@
+1:標籤指示燈含義本地icon_privatePrivate MQTT (10.10.1.6) 連接狀態網絡iconPublic MQTT (210.3.137.13) 連接狀態,請跟著config中的broker修改。
+        if audio_playing:
+            self.alarm_sound = QSoundEffect()
+            alarm_path = os.path.join(os.path.dirname(__file__), "alarm.wav")
+            self.alarm_sound.setSource(QUrl.fromLocalFile(alarm_path))
+            self.alarm_sound.setLoopCount(QSoundEffect.Infinite.value)
+            self.alarm_sound.setVolume(1.0)
+2: 這個聲音文件我需要在config.ini中可以修改，而不是靠hardcode
+3：本地和網絡右側那裏除了紅綠色的指示燈。我還希望加上一個小字，本地顯示wifi的信號强度，然後網絡那裏顯示網絡延遲ms，網絡ping 210.3.137.13。這個ping的ip可以在config.ini中可以修改,config中不空格的話就是公共的ip，如果本地和網絡為紅色的時候就可以不顯示這兩個小字
+4：如果有警報，我希望全屏閃爍紅色邊框可以嗎？這個功能可以在config中true or false
+
+那個小字看不到，另外如果紅色的，左右還是保持之前的間距，變成綠色的，再稍微變寬，顯示出字體。
+本地哪裏的寬度還是太大了，你再好好仔細檢查一下，是不是遺漏了什麽沒有發現修改。其次網絡延遲那裏會跳，有時候顯示有時候不顯示。
