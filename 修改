@@ -1,0 +1,65 @@
+1：右側導航欄我希望是那種可以彈出的設計，第一個就是主頁，第二個就是配置，配置需要輸入密碼，密碼可以在config中設置，密碼是1234
+2：顯示的數據，我希望不要一開始就顯示出來空的，只有接受到的數據才會進行顯示，如果數據接收到了，但是沒有數據更新，你可以像現在這樣顯示，並顯示數據空。
+3：配置裏面我可以進行設置config中的所有内容，加上修改密碼，修改後需要保存至config.ini文件中，並且需要有一個保存按鈕，點擊後會提示保存成功  。
+4：右下角與左下角邊框非常明顯，并且擋住版本號了，以及有些字擋住了，我希望你設計的美觀點。
+
+
+1：log爲什麽都是
+2026-04-29 15:00:04,,,,,,,,,,,,,
+2026-04-29 15:00:34,,,,,,,,,,,,,
+請你幫我看看，我需要打印出debug信息。
+2：在config中加上一個最大的log文件大小與數量的設置，當log文件超過這個大小時，自動備份並創建新的log文件。並保持最多的log文件數量，超過後刪除最舊的log文件。這個也需要在qt的配置頁面展示。
+3：儅導航欄回收以後，主頁與配置的圖標被擋住。以及圖標大小不一致
+4：配置界面的確認進入，以後保存保存配置這些看不見邊框，你的設計不太合理，並看看還有那些可能會導致看不見。
+5：還有警報聲音的文件，以及程序右上角加一個圖標，文件我放在個目錄了，分別是alarm.wav，Picture1.png，圖標大小你需要自適應程序大小美觀一些。
+
+1:導航欄默認先收囘，不展開。
+2：log時不時會有2026-04-29 15:40:20 [DEBUG] core.data_model: CSV row written: 2026-04-29 15:40:20,,,,,,,,,,,,,
+2026-04-29 15:40:50 [DEBUG] core.data_model: CSV row written: 2026-04-29 15:40:50,,,,,,,,,,,,,
+2026-04-29 15:41:20 [DEBUG] core.data_model: CSV row written: 2026-04-29 15:41:20,,,,,,,,,,,,,這是什麽
+3：我有mqtt過來，但是爲什麽沒有數據顯示。config中我設置的是對的
+Topic: Confined_Space/site_name/sensor_dataQoS: 0
+{"device_id": 1, "air_humidity": 67.2, "Battery": 50, "Signal": "N/A"}
+2026-04-29 15:46:05:987
+
+Topic: Confined_Space/site_name/sensor_dataQoS: 0
+{"device_id": 1, "gas_o2": "Error", "Battery": 50, "Signal": "N/A"}
+2026-04-29 15:46:05:988
+
+Topic: Confined_Space/site_name/sensor_dataQoS: 0
+{"device_id": 1, "water_level": 0.0, "Battery": 50, "Signal": "N/A"}
+2026-04-29 15:46:05:988
+
+Topic: Confined_Space/site_name/sensor_dataQoS: 0
+{"device_id": 1, "gas_pm2.5": 0.0, "Battery": 50, "Signal": "N/A"}
+2026-04-29 15:46:05:988
+
+Topic: Confined_Space/site_name/sensor_dataQoS: 0
+{"device_id": 1, "gas_ch4": "Error", "Battery": 50, "Signal": "N/A"}
+2026-04-29 15:46:05:989
+
+Topic: Confined_Space/site_name/sensor_dataQoS: 0
+{"device_id": 1, "gas_h2s": "Error", "Battery": 50, "Signal": "N/A"}
+2026-04-29 15:46:05:989
+
+Topic: Confined_Space/site_name/sensor_dataQoS: 0
+{"device_id": 1, "gas_co": "Error", "Battery": 50, "Signal": "N/A"}
+2026-04-29 15:46:05:989
+
+Topic: Confined_Space/site_name/sensor_dataQoS: 0
+{"device_id": 1, "gas_co2": "Error", "Battery": 50, "Signal": "N/A"}
+2026-04-29 15:46:05:989
+
+Topic: Confined_Space/site_name/sensor_dataQoS: 0
+{"device_id": 1, "gas_ex": "Error", "Battery": 50, "Signal": "N/A"}
+2026-04-29 15:46:05:990
+
+1：error不顯示故障：顯示"-"
+2:數據類型那個字體顯示大一點，例如"風速”“水位”“PM2.5”等等，讓它更突出一些。
+3：在配置裏面可以配置啓動報警的數據，并在config裏面保存，當數據達到報警條件時，播放報警聲音。例如取消風俗警報，則警報可以不用管風速。
+
+
+1:這幾個按鈕，請你加入邊框，並且在鼠標懸停的時候改變顏色，讓它看起來更像一個按鈕。
+：配置頁面的輸入密碼的，“確認進入” "保存配置" "保存配置以後的OK”
+2：程序運行以後，qt界面需要自動最大化並放在窗口最前面。
+3：每一個數據展示的卡片請用淺淺的邊框框起來，讓它看起來更像一個卡片，

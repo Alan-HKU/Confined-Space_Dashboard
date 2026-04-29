@@ -1,77 +1,103 @@
-# PyDracula - Modern GUI PySide6 / PyQt6
-# 
+# 密閉空間監測系統 v2.0
 
-> ## :gift: **//// DONATE ////**
-> ## 🔗 Donate (Gumroad): https://gum.co/mHsRC
-> This interface is free for any use, but if you are going to use it commercially, consider helping to maintain this project and others with a donation by Gumroado at the link above. This helps to keep this and other projects active.
+## 目錄結構
 
-> **Warning**: this project was created using PySide6 and Python 3.9, using previous versions can cause compatibility problems.
-
-# YouTube - Presentation And Tutorial
-Presentation and tutorial video with the main functions of the user interface.
-> 🔗 https://youtu.be/9DnaHg4M_AM
-
-# Multiple Themes
-![PyDracula_Default_Dark](https://user-images.githubusercontent.com/60605512/112993874-0b647700-9140-11eb-8670-61322d70dbe3.png)
-![PyDracula_Light](https://user-images.githubusercontent.com/60605512/112993918-18816600-9140-11eb-837c-e7a7c3d2b05e.png)
-
-# High DPI
-> Qt Widgets is an old technology and does not have a good support for high DPI settings, making these images look distorted when your system has DPI applied above 100%.
-You can minimize this problem using a workaround by applying this code below in "main.py" just below the import of the Qt modules.
-```python
-# ADJUST QT FONT DPI FOR HIGHT SCALE
-# ///////////////////////////////////////////////////////////////
-from modules import *
-from widgets import *
-os.environ["QT_FONT_DPI"] = "96"
+```
+confined_space/
+├── main.py                  ← 入口點
+├── config.ini               ← 配置文件（可在程式內修改）
+├── requirements.txt         ← Python 依賴
+├── confined_space.spec      ← PyInstaller 打包配置
+├── build_windows.bat        ← Windows 一鍵打包
+├── build_linux.sh           ← Linux 一鍵打包
+├── assets/
+│   ├── alarm.wav            ← 報警音頻
+│   └── Picture1.png         ← 程式圖標
+├── core/                    ← 業務邏輯（無 Qt 依賴）
+│   ├── config.py
+│   ├── data_model.py
+│   ├── mqtt_client.py
+│   └── logger_setup.py      ← 日誌（跨平台 ANSI 顏色）
+└── ui/                      ← 界面層
+    ├── styles.py             ← QSS（字體跨平台自適應）
+    └── ...
 ```
 
-# Running
-> Inside your preferred terminal run the commands below depending on your system, remembering before installing Python 3.9> and PySide6 "pip install PySide6".
-> ## **Windows**:
-```console
-python main.py
-```
-> ## **MacOS and Linux**:
-```console
-python3 main.py
-```
-# Compiling
-> ## **Windows**:
-```console
-python setup.py build
+---
+
+## 直接運行（開發 / 測試）
+
+```bash
+pip install -r requirements.txt
+python main.py          # Windows
+python3 main.py         # Linux
 ```
 
-# Project Files And Folders
-> **main.py**: application initialization file.
+Linux 需要先安裝 xcb 和 GStreamer（見下方）。
 
-> **main.ui**: Qt Designer project.
+---
 
-> **resouces.qrc**: Qt Designer resoucers, add here your resources using Qt Designer. Use version 6 >
+## 打包成獨立可執行文件
 
-> **setup.py**: cx-Freeze setup to compile your application (configured for Windows).
+### Windows → .exe
 
-> **themes/**: add here your themes (.qss).
+```bat
+REM 方法一：雙擊腳本
+build_windows.bat
 
-> **modules/**: module for running PyDracula GUI.
+REM 方法二：手動
+pip install pyinstaller
+pyinstaller confined_space.spec --noconfirm
+```
 
-> **modules/app_funtions.py**: add your application's functions here.
-Up
-> **modules/app_settings.py**: global variables to configure user interface.
+輸出：`dist\密閉空間監測系統.exe`（單文件，無需安裝 Python）
 
-> **modules/resources_rc.py**: "resource.qrc" file compiled for python using the command: ```pyside6-rcc resources.qrc -o resources_rc.py```.
+### Linux → 單文件可執行
 
-> **modules/ui_functions.py**: add here only functions related to the user interface / GUI.
+```bash
+# 方法一：腳本（自動安裝系統依賴）
+bash build_linux.sh
 
-> **modules/ui_main.py**: file related to the user interface exported by Qt Designer. You can compile it manually using the command: ```pyside6-uic main.ui> ui_main.py ```.
-After expoting in .py and change the line "import resources_rc" to "from. Resoucers_rc import *" to use as a module.
+# 方法二：手動
+pip install pyinstaller
+pyinstaller confined_space.spec --noconfirm
+chmod +x "dist/密閉空間監測系統"
+"./dist/密閉空間監測系統"
+```
 
-> **images/**: put all your images and icons here before converting to Python (resources_re.py) ```pyside6-rcc resources.qrc -o resources_rc.py```.
+---
 
-# Projects Created Using PyDracula
-**See the projects that were created using PyDracula.**
-> To participate create a "Issue" with the name beginning with "#pydracula_project", leaving the link of your project on Github, name of the creator and what is its functionality. Your project will be added and this list will be deleted from "Issue".
-**Malicious programs will not be added**!
+## Linux 系統依賴
 
+### 界面（必須）
+```bash
+sudo apt install libxcb-cursor0 libxcb-icccm4 libxcb-image0 \
+    libxcb-keysyms1 libxcb-randr0 libxcb-render-util0
+```
 
+### 報警音頻（GStreamer）
+```bash
+sudo apt install gstreamer1.0-plugins-good gstreamer1.0-plugins-bad \
+    libgstreamer1.0-0 gstreamer1.0-alsa
+```
 
+---
+
+## 平台差異
+
+| 功能 | Windows | Linux |
+|------|---------|-------|
+| 字體 | Segoe UI + Microsoft JhengHei | Noto Sans + WenQuanYi |
+| 控制台顏色 | Win10+ / Windows Terminal | 所有終端 |
+| 報警音頻 | DirectSound（內建） | 需要 GStreamer |
+| 本機電量 | psutil（筆記本） | psutil（筆記本） |
+
+---
+
+## MQTT Payload 格式
+
+```json
+{"device_id": 1, "gas_h2s": 3.5, "air_humidity": 67.2, "Battery": 80}
+{"status": "bind"}
+{"status": "unbind"}
+```

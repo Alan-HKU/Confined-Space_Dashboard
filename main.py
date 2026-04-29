@@ -1,123 +1,109 @@
-import sys
+"""
+main.py — Entry point for the Confined Space Monitoring System.
+
+Start-up order
+--------------
+1. Locate project root so relative paths (assets/, config.ini) always resolve
+2. setup_logging() — rotating file + coloured console DEBUG output
+3. Load config.ini
+4. Create QApplication + set window icon
+5. Start MQTT clients (background threads)
+6. Create DataModel
+7. Create MainWindow
+8. Start publish timer
+9. Enter Qt event loop
+"""
+
+import logging
 import os
+import sys
+from pathlib import Path
 
-from modules import *
-from widgets import *
-from funciton import *
+# ── 0. Ensure CWD is the project directory ───────────────────────────────────
+PROJECT_ROOT = Path(__file__).parent.resolve()
+os.chdir(PROJECT_ROOT)
 
+# ── 1. Logging — must happen before any module calls getLogger() ──────────────
+from core.config       import load as cfg_load, get
+from core.logger_setup import setup_logging
 
-widgets = None
+cfg_load("config.ini")   # read log settings before QApplication
 
+setup_logging(
+    log_path      = get("LogLocation")       or "Data.log",
+    max_bytes     = int(get("log_max_bytes")     or 5 * 1024 * 1024),
+    backup_count  = int(get("log_backup_count")  or 5),
+    console_level = logging.DEBUG,   # full debug on console
+    file_level    = logging.INFO,
+)
 
-class MainWindow(QMainWindow):
-    def __init__(self):
-        os.environ["QT_FONT_DPI"] = "100"
-        QMainWindow.__init__(self)
+log = logging.getLogger(__name__)
+log.info("=== 密閉空間監測系統 starting up ===")
 
-        self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)
+# ── 2. Qt imports (after logging is set up) ───────────────────────────────────
+from PySide6.QtWidgets import QApplication
+from PySide6.QtGui     import QIcon
+from PySide6.QtCore    import QTimer
 
-        global widgets
-        widgets = self.ui
-
-        Settings.ENABLE_CUSTOM_TITLE_BAR = True
-
-        title       = "密閉空間監測系統"
-        description = "密閉空間監測系統"
-        self.setWindowTitle(title)
-        widgets.titleRightInfo.setText(description)
-
-        UIFunctions.uiDefinitions(self)
-
-        # Left menu navigation
-        widgets.btn_home.clicked.connect(self.buttonClick)
-
-        self.show()
-
-        widgets.stackedWidget.setCurrentWidget(widgets.home)
-        widgets.btn_home.setStyleSheet(
-            UIFunctions.selectMenu(widgets.btn_home.styleSheet())
-        )
-
-    def buttonClick(self):
-        btn     = self.sender()
-        btnName = btn.objectName()
-
-        page_map = {
-            "btn_home":    widgets.home,
-            "btn_widgets": getattr(widgets, "widgets", None),
-            "btn_new":     getattr(widgets, "new_page", None),
-        }
-
-        if btnName in page_map and page_map[btnName] is not None:
-            widgets.stackedWidget.setCurrentWidget(page_map[btnName])
-            UIFunctions.resetStyle(self, btnName)
-            btn.setStyleSheet(UIFunctions.selectMenu(btn.styleSheet()))
-
-    def resizeEvent(self, event):
-        UIFunctions.resize_grips(self)
-
-    def mousePressEvent(self, event):
-        self.dragPos = event.globalPos()
+from core.data_model  import DataModel
+from core.mqtt_client import make_client
+from ui.main_window   import MainWindow
 
 
-if __name__ == "__main__":
-    all_init()
+def _app_icon() -> QIcon:
+    icon_path = PROJECT_ROOT / "assets" / "Picture1.png"
+    if icon_path.exists():
+        return QIcon(str(icon_path))
+    log.warning("App icon not found: %s", icon_path)
+    return QIcon()
 
-    os.environ["QT_FONT_DPI"] = get("DPI")
 
-    # QApplication MUST be created before any Qt objects (QSoundEffect, QTimer, etc.)
+def main():
+    os.environ["QT_FONT_DPI"] = str(get("DPI") or "96")
+
     app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon("icon.ico"))
+    app.setApplicationName("密閉空間監測系統")
+    app.setWindowIcon(_app_icon())
 
-    private_mqtt = mqtt_client_init(
-        get("private_broker"), get("private_broker_port"), get("private_topic"),
-        role="private"
+    # ── MQTT ──────────────────────────────────────────────────────────────────
+    private_mqtt = make_client(
+        broker = get("private_broker"),
+        port   = int(get("private_broker_port") or 1883),
+        topic  = get("private_topic"),
+        role   = "private",
     )
-    print(f"Private MQTT -> {get('private_broker')}:{get('private_broker_port')}  topic={get('private_topic')}")
+    log.info("Private MQTT → %s:%s  topic=%s",
+             get("private_broker"), get("private_broker_port"), get("private_topic"))
 
-    public_mqtt = mqtt_client_init(
-        get("public_broker"), get("public_broker_port"), get("private_topic"),
-        role="public"
+    public_mqtt = make_client(
+        broker = get("public_broker"),
+        port   = int(get("public_broker_port") or 8086),
+        topic  = get("public_topic"),
+        role   = "public",
     )
-    print(f"Public MQTT  -> {get('public_broker')}:{get('public_broker_port')}  topic={get('public_topic')}")
+    log.info("Public MQTT  → %s:%s  topic=%s",
+             get("public_broker"), get("public_broker_port"), get("public_topic"))
 
-    data_obj = data(public_mqtt)
-    gui      = GUI()   # QSoundEffect created here — must be after QApplication
+    # ── Data model ────────────────────────────────────────────────────────────
+    data = DataModel(public_mqtt=public_mqtt)
+    log.debug("DataModel created with %d sensors", len(data.sensor_keys()))
 
-    window = MainWindow()
-    window_init(window)
+    # ── Window — show maximized and bring to front ────────────────────────────
+    window = MainWindow(data)
+    window.showMaximized()
+    window._title_bar._maximized = True    # sync button icon state
+    window._title_bar._btn_max.setText("❐")
+    window.raise_()
+    window.activateWindow()
+    log.info("MainWindow shown (maximized)")
 
-    # GUI refresh (labels, colours)
-    timer1 = QTimer()
-    timer1.timeout.connect(lambda: gui.update(window, data_obj))
-    timer1.start(get("GUIReflashTime"))
-
-    # Data logging
-    timer2 = QTimer()
-    timer2.timeout.connect(lambda: data_obj.log())
-    timer2.start(get("LoggingTime"))
-
-    # Consume MQTT buffer -> update data model
-    timer4 = QTimer()
-    timer4.timeout.connect(lambda: data_obj.get())
-    timer4.start(get("DataReflashTime"))
-
-    # Publish upstream
-    timer5 = QTimer()
-    timer5.timeout.connect(lambda: data_obj.send(public_mqtt))
-    timer5.start(get("MQTTTime"))
-
-    # Rotate display page
-    timer6 = QTimer()
-    timer6.timeout.connect(lambda: gui.switch_display_device(data_obj))
-    timer6.start(get("DisplaySwitchTime"))
-
-    # Bind status indicator
-    timer7 = QTimer()
-    timer7.timeout.connect(lambda: set_status_bind(window, data_obj))
-    timer7.start(get("GUIReflashTime"))
+    # ── Upstream publish timer ────────────────────────────────────────────────
+    t_send = QTimer()
+    t_send.timeout.connect(lambda: data.send(public_mqtt))
+    t_send.start(get("MQTTTime") or 10000)
 
     sys.exit(app.exec())
 
-    
+
+if __name__ == "__main__":
+    main()

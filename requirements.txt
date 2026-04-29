@@ -1,14 +1,7 @@
-# Confined Space Dashboard - Python Dependencies
-# Install with: pip install -r requirements.txt
-
-# Qt GUI framework
-PySide6>=6.4.0
-
-# MQTT client
+# Core runtime
+PySide6>=6.5.0
 paho-mqtt>=1.6.1
-
-# System monitoring (battery, CPU, memory)
 psutil>=5.9.0
 
-# PyInstaller packaging (optional, only needed to build .exe)
-# cx-Freeze>=6.15.0
+# Packaging tool (development only — not needed at runtime)
+# pyinstaller>=6.0.0
