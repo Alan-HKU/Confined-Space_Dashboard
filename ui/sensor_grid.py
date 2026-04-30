@@ -49,8 +49,11 @@ class SensorGrid(QWidget):
 
         # Build fixed 2×6 grid
         self._layout = QGridLayout(self)
-        self._layout.setContentsMargins(8, 8, 8, 8)
-        self._layout.setSpacing(8)
+        self._layout.setContentsMargins(12, 12, 12, 12)
+        self._layout.setSpacing(12)
+
+        # Explicit background so cards contrast against it
+        self.setStyleSheet(f"background-color: #1c1f26;")
 
         # Equal stretch on all cols and rows — never changes
         for col in range(COLS):

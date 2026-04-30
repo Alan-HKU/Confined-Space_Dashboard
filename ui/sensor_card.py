@@ -1,42 +1,63 @@
 """
-sensor_card.py — Single sensor display card.
+sensor_card.py — High-end sensor card with reliable border rendering.
 
-States
-------
-  WAITING  – no data ever received → card hidden (setVisible(False))
-  LIVE     – data received, fresh   → normal / warn / alarm colour
-  STALE    – data received, timeout → value shown as "—", grey text
+Uses QFrame as the outer shell so border + border-radius render correctly
+in Qt (QWidget needs WA_StyledBackground which has side effects; QFrame
+renders styled borders reliably out of the box).
 
-The card becomes visible the first time update_display() is called with
-value is not None.  It never goes back to hidden.
+Layout:
+  QFrame #sensor_card_frame  ← border + border-radius painted here
+    └─ QVBoxLayout (no margins, spacing=0)
+         ├─ accent_bar  QFrame  3px coloured top strip
+         └─ body QWidget
+               ├─ header row: name  +  device
+               ├─ separator 1px
+               ├─ value label (large, centred, expands)
+               └─ unit label
 """
 
 from PySide6.QtCore    import Qt
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QSizePolicy
+from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout,
+                                QLabel, QSizePolicy, QFrame)
 
 from core.data_model import SENSOR_WAITING, SENSOR_LIVE, SENSOR_ERROR, SENSOR_OFFLINE
-from ui.styles import (C_WARN, C_ALARM, C_TEXT_SEC, C_TEXT_PRI,
-                       C_TEXT_DIM, C_BG_CARD, C_BORDER, C_NORMAL, C_ACCENT2)
+from ui.styles import C_WARN, C_ALARM, C_TEXT_PRI, C_TEXT_DIM, C_TEXT_SEC
 
-_LEVEL_VALUE_COLOUR = {
-    "normal": C_TEXT_PRI,
-    "warn":   C_WARN,
-    "alarm":  C_ALARM,
+# ── Design tokens ─────────────────────────────────────────────────────────────
+_PANEL_BG = "#1c1f26"    # main panel (grid background)
+
+_CARD_BG = {
+    "normal":  "#252a35",   # clearly lighter than panel → card pops
+    "warn":    "#2c2a1a",
+    "alarm":   "#2c1a1a",
+    "offline": "#20232c",
+    "error":   "#22252e",
 }
-_LEVEL_BORDER_COLOUR = {
-    "normal": "#4a5066",   # brighter than C_BORDER to be clearly visible
-    "warn":   C_WARN,
-    "alarm":  C_ALARM,
+_ACCENT = {
+    "normal":  "#4a5270",
+    "warn":    "#d4c040",
+    "alarm":   "#cc3333",
+    "offline": "#3a3f52",
+    "error":   "#3a3f52",
 }
-_LEVEL_BORDER_WIDTH = {
-    "normal": 1,
-    "warn":   2,
-    "alarm":  2,
+_BORDER = {
+    "normal":  "#3e4560",
+    "warn":    "#807830",
+    "alarm":   "#803030",
+    "offline": "#30354a",
+    "error":   "#35394e",
+}
+_VALUE_COLOUR = {
+    "normal":  "#e8eaf0",
+    "warn":    "#f1fa8c",
+    "alarm":   "#ff5555",
+    "offline": "#505870",
+    "error":   "#606680",
 }
 
 
 class SensorCard(QWidget):
-    """Single sensor card — hidden until first data arrives."""
+    """Sensor card — hidden until first MQTT message arrives."""
 
     def __init__(self, sensor_key: str, meta: dict, parent=None):
         super().__init__(parent)
@@ -44,64 +65,91 @@ class SensorCard(QWidget):
         self._meta          = meta
         self._level         = "normal"
         self._ever_received = False
-        self._flash_state   = False
 
-        # Cache last rendered state to avoid redundant setStyleSheet/setText
-        self._last_value_text   = ""
-        self._last_val_colour   = ""
-        self._last_device_text  = ""
-        self._last_border_state = ("normal", False, None)  # (level, flash, override)
+        # Dirty-check cache
+        self._last_text   = ""
+        self._last_colour = ""
+        self._last_dev    = ""
+        self._last_cstate = ""
+        self._last_flash  = False
 
-        self.setObjectName("sensor_card")
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self._build_ui()
-        self._apply_card_style("normal", flash=False)
-        self.setVisible(False)   # hidden until first data
+        self.setVisible(False)
 
-    # ── Layout ────────────────────────────────────────────────────────────────
+    # ── Build ──────────────────────────────────────────────────────────────────
 
     def _build_ui(self):
-        root = QVBoxLayout(self)
-        root.setContentsMargins(12, 10, 12, 10)
-        root.setSpacing(2)
+        outer = QVBoxLayout(self)
+        outer.setContentsMargins(0, 0, 0, 0)
+        outer.setSpacing(0)
 
-        # ── Top: name + device id ──
-        top = QHBoxLayout()
-        top.setContentsMargins(0, 0, 0, 0)
-        top.setSpacing(0)
+        # ── QFrame shell: this is where border + border-radius is applied ──
+        self._frame = QFrame(self)
+        self._frame.setObjectName("sensor_card_frame")
+        self._frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self._frame.setFrameShape(QFrame.StyledPanel)   # enables styled painting
+        outer.addWidget(self._frame)
+
+        frame_lay = QVBoxLayout(self._frame)
+        frame_lay.setContentsMargins(0, 0, 0, 0)
+        frame_lay.setSpacing(0)
+
+        # ── Top accent bar ──
+        self._accent = QFrame()
+        self._accent.setObjectName("card_accent")
+        self._accent.setFixedHeight(4)
+        frame_lay.addWidget(self._accent)
+
+        # ── Body ──
+        body = QWidget()
+        body.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        body_lay = QVBoxLayout(body)
+        body_lay.setContentsMargins(16, 8, 16, 12)
+        body_lay.setSpacing(0)
+
+        # Header: name + device id
+        hdr = QHBoxLayout()
+        hdr.setContentsMargins(0, 0, 0, 0)
+        hdr.setSpacing(4)
 
         self._lbl_name = QLabel(self._meta.get("name", self._key))
-        self._lbl_name.setObjectName("card_name")
         self._lbl_name.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self._lbl_name.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        # Larger, bolder sensor name
-        self._lbl_name.setStyleSheet(
-            "font-size: 11pt; font-weight: 700; color: #dcdcdc;"
-            " background: transparent; border: none;"
-        )
-        top.addWidget(self._lbl_name)
+        hdr.addWidget(self._lbl_name)
 
         self._lbl_device = QLabel("")
-        self._lbl_device.setObjectName("card_device")
         self._lbl_device.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
-        top.addWidget(self._lbl_device)
+        hdr.addWidget(self._lbl_device)
 
-        root.addLayout(top)
+        body_lay.addLayout(hdr)
+        body_lay.addSpacing(6)
 
-        # ── Value ──
+        # Separator line
+        sep = QFrame()
+        sep.setFrameShape(QFrame.HLine)
+        sep.setFixedHeight(1)
+        sep.setObjectName("card_sep")
+        body_lay.addWidget(sep)
+
+        # Value — large, centred, thin weight
         self._lbl_value = QLabel("—")
-        self._lbl_value.setObjectName("card_value")
         self._lbl_value.setAlignment(Qt.AlignCenter)
         self._lbl_value.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        root.addWidget(self._lbl_value)
+        body_lay.addWidget(self._lbl_value)
 
-        # ── Unit ──
+        # Unit
         self._lbl_unit = QLabel(self._meta.get("unit", ""))
-        self._lbl_unit.setObjectName("card_unit")
         self._lbl_unit.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
-        root.addWidget(self._lbl_unit)
+        body_lay.addWidget(self._lbl_unit)
+        body_lay.addSpacing(2)
 
-    # ── Public API ────────────────────────────────────────────────────────────
+        frame_lay.addWidget(body, 1)
+
+        # Apply initial style
+        self._apply("normal")
+
+    # ── Public API ─────────────────────────────────────────────────────────────
 
     def update_display(
         self,
@@ -113,28 +161,22 @@ class SensorCard(QWidget):
         has_timestamp: bool = False,
         sensor_state:  str  = SENSOR_WAITING,
     ) -> None:
-        """Update card. Skips no-op redraws for performance."""
-
         if not self._ever_received and sensor_state != SENSOR_WAITING:
             self._ever_received = True
             self.setVisible(True)
-
         if not self._ever_received:
             return
 
-        # ── Compute desired text + colour ──────────────────────────────────
-        border_override = None
-
+        # Determine card state
         if sensor_state == SENSOR_OFFLINE:
-            new_text    = "離線"
-            val_colour  = C_TEXT_DIM
-            border_override = "#555a66"
+            cstate   = "offline"
+            new_text = "離線"
         elif sensor_state == SENSOR_ERROR:
-            new_text    = "—"
-            val_colour  = C_TEXT_SEC
+            cstate   = "error"
+            new_text = "—"
         elif value is None:
-            new_text    = "—"
-            val_colour  = C_TEXT_DIM
+            cstate   = "normal"
+            new_text = "—"
         else:
             unit = self._meta.get("unit", "")
             if unit in ("exist", "alarm"):
@@ -145,57 +187,107 @@ class SensorCard(QWidget):
                 new_text = f"{value:.2f}"
             else:
                 new_text = f"{value:.1f}"
-            val_colour  = _LEVEL_VALUE_COLOUR.get(level, C_TEXT_PRI)
+            cstate = level
 
-        new_val_style = (
-            f"font-size: 30pt; font-weight: bold; color: {val_colour};"
-            f" background: transparent; border: none;"
-        )
+        colour = _VALUE_COLOUR.get(cstate, "#e8eaf0")
 
-        # ── Only call Qt APIs when something actually changed ──────────────
-        if new_text != self._last_value_text:
+        # Dirty-check
+        if new_text != self._last_text:
             self._lbl_value.setText(new_text)
-            self._last_value_text = new_text
+            self._last_text = new_text
 
-        if new_val_style != self._last_val_colour:
-            self._lbl_value.setStyleSheet(new_val_style)
-            self._last_val_colour = new_val_style
+        if colour != self._last_colour:
+            self._lbl_value.setStyleSheet(
+                f"font-size: 38pt; font-weight: 200; color: {colour};"
+                " background: transparent; border: none; letter-spacing: -2px;"
+            )
+            self._last_colour = colour
 
-        dev_text = device_id or ""
-        if dev_text != self._last_device_text:
-            self._lbl_device.setText(dev_text)
-            self._last_device_text = dev_text
+        dev = device_id or ""
+        if dev != self._last_dev:
+            self._lbl_device.setText(dev)
+            self._last_dev = dev
+
+        if cstate != self._last_cstate or flash != self._last_flash:
+            self._apply(cstate, flash)
+            self._last_cstate = cstate
+            self._last_flash  = flash
 
         self._level = level
-        new_border  = (level, flash, border_override)
-        if new_border != self._last_border_state:
-            self._apply_card_style(level, flash, border_override=border_override)
-            self._last_border_state = new_border
 
     def flash_toggle(self) -> None:
         if self._level == "alarm":
-            self._flash_state = not getattr(self, "_flash_state", False)
-            self._apply_card_style(self._level, self._flash_state)
+            self._last_flash = not self._last_flash
+            self._apply("alarm", self._last_flash)
 
-    def _apply_card_style(self, level: str, flash: bool,
-                          border_override: str | None = None) -> None:
-        if border_override:
-            bc = border_override
-            bw = 1
-        else:
-            bc = _LEVEL_BORDER_COLOUR.get(level, "#4a5066")
-            bw = _LEVEL_BORDER_WIDTH.get(level, 1)
+    # ── Styling ────────────────────────────────────────────────────────────────
 
-        if flash and level == "alarm":
-            bg = "rgba(255,85,85,0.12)"
-        else:
-            bg = C_BG_CARD  # slightly darker than panel = card feel
+    def _apply(self, cstate: str, flash: bool = False) -> None:
+        bg     = _CARD_BG.get(cstate, _CARD_BG["normal"])
+        accent = _ACCENT.get(cstate, _ACCENT["normal"])
+        border = _BORDER.get(cstate, _BORDER["normal"])
 
-        self.setStyleSheet(
-            f"#sensor_card {{"
+        if flash and cstate == "alarm":
+            bg     = "#3a1515"
+            accent = "#ff2222"
+            border = "#cc2222"
+
+        # ── Frame: full border + radius ──
+        self._frame.setStyleSheet(
+            f"QFrame#sensor_card_frame {{"
             f"  background-color: {bg};"
-            f"  border: {bw}px solid {bc};"
-            f"  border-radius: 10px;"
+            f"  border: 1px solid {border};"
+            f"  border-top: none;"          # accent bar sits above
+            f"  border-bottom-left-radius: 8px;"
+            f"  border-bottom-right-radius: 8px;"
+            f"  border-top-left-radius: 0px;"
+            f"  border-top-right-radius: 0px;"
             f"}}"
         )
 
+        # ── Accent bar ──
+        self._accent.setStyleSheet(
+            f"QFrame#card_accent {{"
+            f"  background-color: {accent};"
+            f"  border: none;"
+            f"  border-top-left-radius: 8px;"
+            f"  border-top-right-radius: 8px;"
+            f"  border-bottom: none;"
+            f"}}"
+        )
+
+        # ── Clear all child styles so they inherit transparent ──
+        self._frame.setStyleSheet(
+            self._frame.styleSheet() +
+            "QFrame#sensor_card_frame QWidget { background: transparent; border: none; }"
+            "QFrame#sensor_card_frame QLabel  { background: transparent; border: none; }"
+            "QFrame#sensor_card_frame QFrame[objectName='card_sep'] {"
+            "  background-color: #303550; border: none; }"
+        )
+
+        # Name label
+        name_alpha = "rgba(160,168,190,0.85)" if cstate == "offline" else "#a0a8be"
+        self._lbl_name.setStyleSheet(
+            f"font-size: 9pt; font-weight: 600; letter-spacing: 0.3px;"
+            f" color: {name_alpha}; background: transparent; border: none;"
+        )
+
+        # Device label
+        self._lbl_device.setStyleSheet(
+            f"font-size: 7pt; color: #404860;"
+            " background: transparent; border: none;"
+        )
+
+        # Unit label
+        unit_colour = "#404860" if cstate in ("offline", "error") else "#505878"
+        self._lbl_unit.setStyleSheet(
+            f"font-size: 8pt; color: {unit_colour}; letter-spacing: 0.8px;"
+            " background: transparent; border: none;"
+        )
+
+        # Initial value label style if not yet set
+        if not self._last_colour:
+            self._lbl_value.setStyleSheet(
+                "font-size: 38pt; font-weight: 200; color: #e8eaf0;"
+                " background: transparent; border: none; letter-spacing: -2px;"
+            )

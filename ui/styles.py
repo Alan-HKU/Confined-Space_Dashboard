@@ -21,10 +21,10 @@ else:
     _FONT_FAMILY = '"Noto Sans", "WenQuanYi Micro Hei", "Noto Sans CJK SC", "DejaVu Sans", sans-serif'
 
 
-C_BG_DEEP    = "#1a1d23"
-C_BG_PANEL   = "#282c34"
-C_BG_SIDEBAR = "#21252b"
-C_BG_CARD    = "#2c313a"
+C_BG_DEEP    = "#14161c"
+C_BG_PANEL   = "#1c1f26"   # deeper panel — cards at #1e2229 pop more
+C_BG_SIDEBAR = "#191c22"
+C_BG_CARD    = "#1e2229"
 C_BG_INPUT   = "#1e2127"
 C_BORDER     = "#373c47"
 C_BORDER_MID = "#4a5060"
@@ -158,22 +158,27 @@ QToolTip {{
 }}
 
 /* ═══════════════════════════════════════════
-   SENSOR CARD
+   SENSOR CARD — QFrame shell renders border reliably
+   Per-card inline setStyleSheet() overrides each state
    ═══════════════════════════════════════════ */
-#sensor_card {{
-    background-color: {C_BG_CARD};
-    border: 1px solid {C_BORDER};
-    border-radius: 10px;
+QFrame#sensor_card_frame {{
+    background-color: #252a35;
+    border: 1px solid #3e4560;
+    border-top: none;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
 }}
-#sensor_card QLabel {{
-    background: transparent;
+QFrame#card_accent {{
+    background-color: #4a5270;
     border: none;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
 }}
-#card_name   {{ color: {C_TEXT_PRI}; font-size: 9pt; font-weight: 600; background: transparent; border: none; }}
-#card_device {{ color: {C_TEXT_DIM}; font-size: 8pt; background: transparent; border: none; }}
-#card_value  {{ font-size: 30pt; font-weight: bold; color: {C_TEXT_PRI}; background: transparent; border: none; }}
-#card_unit   {{ color: {C_TEXT_SEC}; font-size: 9pt; background: transparent; border: none; }}
-
+QFrame#card_sep {{
+    background-color: #303550;
+    border: none;
+    max-height: 1px;
+}}
 /* ═══════════════════════════════════════════
    INPUTS
    ═══════════════════════════════════════════ */
