@@ -75,7 +75,8 @@ class TitleBar(QWidget):
         lay.addWidget(self._btn_close)
 
     def _load_logo(self):
-        p = _ASSETS / "Picture1.png"
+        from core.app_paths import resolve_asset
+        p = resolve_asset("Picture1.png")
         if p.exists():
             px = QPixmap(str(p)).scaledToHeight(_LOGO_H, Qt.SmoothTransformation)
             self._logo_lbl.setPixmap(px)

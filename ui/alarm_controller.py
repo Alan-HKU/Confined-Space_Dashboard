@@ -27,16 +27,16 @@ class AlarmController:
         self._alarm_active    = False
         self._flash_state     = False
 
-        # Resolve alarm sound — check assets/ first, then CWD
+        # Resolve alarm sound via app_paths (works in both dev and frozen exe)
+        from core.app_paths import resolve_asset
         sound_file = get("alarm_sound_file") or "alarm.wav"
-        assets_path = Path(__file__).parent.parent / "assets" / sound_file
-        cwd_path    = Path(sound_file)
-        resolved    = assets_path if assets_path.exists() else (cwd_path if cwd_path.exists() else None)
+        resolved_path = resolve_asset(sound_file)
+        resolved = resolved_path if resolved_path.exists() else None
 
         self._sound = QSoundEffect()
         if self._audio_enabled and resolved:
             self._sound.setSource(QUrl.fromLocalFile(str(resolved.resolve())))
-            self._sound.setLoopCount(-2)   # -2 == QSoundEffect.Infinite across Qt6 versions
+            self._sound.setLoopCount(-2)
             self._sound.setVolume(1.0)
             log.info("Alarm sound loaded: %s", resolved)
         elif self._audio_enabled:

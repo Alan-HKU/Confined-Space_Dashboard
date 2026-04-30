@@ -20,13 +20,21 @@ import os
 import sys
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).parent.resolve()
-os.chdir(PROJECT_ROOT)
+# ── 0. Resolve paths FIRST (before any imports that use Path("config.ini")) ──
+#    app_paths must be importable with no other project dependencies
+sys.path.insert(0, str(Path(__file__).parent.resolve()))
+from core.app_paths import ensure_config, CONFIG_PATH, log_path
+
+# Ensure writable config exists next to exe (copies bundled default if needed)
+ensure_config()
+
+# Set CWD to the exe/script directory so relative paths work correctly
+os.chdir(CONFIG_PATH.parent)
 
 from core.config       import load as cfg_load, get
 from core.logger_setup import setup_logging
 
-cfg_load("config.ini")
+cfg_load(str(CONFIG_PATH))
 
 _LEVEL_MAP = {"DEBUG": logging.DEBUG, "INFO": logging.INFO,
               "WARNING": logging.WARNING, "ERROR": logging.ERROR}
@@ -34,7 +42,7 @@ _file_level_str = str(get("log_file_level") or "DEBUG").upper()
 _file_level = _LEVEL_MAP.get(_file_level_str, logging.DEBUG)
 
 setup_logging(
-    log_path      = get("LogLocation")       or "Data.log",
+    log_path      = str(log_path(get("LogLocation") or "Data.log")),
     max_bytes     = int(get("log_max_bytes")     or 5 * 1024 * 1024),
     backup_count  = int(get("log_backup_count")  or 5),
     console_level = logging.DEBUG,
@@ -55,7 +63,8 @@ from ui.main_window   import MainWindow
 
 
 def _app_icon() -> QIcon:
-    p = PROJECT_ROOT / "assets" / "Picture1.png"
+    from core.app_paths import resolve_asset
+    p = resolve_asset("Picture1.png")
     return QIcon(str(p)) if p.exists() else QIcon()
 
 

@@ -1,23 +1,9 @@
-"""
-main_window.py — MainWindow: frameless dark-theme shell.
-
-Layout
-------
-  ┌──────── title_bar (hamburger | title | min/max/close) ────────────┐
-  │ sidebar │                 stacked pages                            │
-  │ [icon]  │   ┌── home (sensor grid) ──────────────────────────┐   │
-  │ [icon]  │   │  6×2 sensor cards (hidden until data arrives)  │   │
-  │         │   └────────────────────────────────────────────────┘   │
-  ├─────────┴───────── status_bar ────────────────────────────────────┤
-  └───────────────────────────────────────────────────────────────────┘
-
-Sidebar collapses to icon-only (48px) / expands to 160px via animation.
-"""
-
 import logging
 from datetime import datetime
+from pathlib import Path
 
 from PySide6.QtCore    import Qt, QTimer, QSize, QPropertyAnimation, QEasingCurve
+from PySide6.QtGui     import QIcon, QPixmap, QColor, QPainter
 from PySide6.QtWidgets import (
     QMainWindow, QWidget, QHBoxLayout, QVBoxLayout,
     QPushButton, QLabel, QFrame, QStackedWidget, QSizePolicy,
@@ -36,47 +22,140 @@ from ui.alarm_controller import AlarmController
 
 log = logging.getLogger(__name__)
 
+_ASSETS         = Path(__file__).parent.parent / "assets"
 _SIDEBAR_COLLAPSED = 52
 _SIDEBAR_EXPANDED  = 164
 _ANIM_MS           = 220
+
+# Icon sizes for expanded / collapsed sidebar
+_ICON_EXPANDED  = QSize(18, 18)
+_ICON_COLLAPSED = QSize(22, 22)
+
+
+def _load_icon(filename: str, tint: str = "#9aa0b8") -> QIcon:
+    """
+    Load a PNG from assets/ and tint it to the given colour.
+    Falls back to a blank icon if the file is missing.
+    """
+    from core.app_paths import resolve_asset
+    path = resolve_asset(filename)
+    if not path.exists():
+        log.warning("Nav icon not found: %s", path)
+        return QIcon()
+
+    src = QPixmap(str(path))
+
+    # Create tinted version: fill solid colour, mask with source alpha
+    tinted = QPixmap(src.size())
+    tinted.fill(Qt.transparent)
+
+    painter = QPainter(tinted)
+    painter.setCompositionMode(QPainter.CompositionMode_Source)
+    # Draw source at full alpha to copy the shape
+    painter.drawPixmap(0, 0, src)
+    # Multiply colour
+    painter.setCompositionMode(QPainter.CompositionMode_SourceIn)
+    painter.fillRect(tinted.rect(), QColor(tint))
+    painter.end()
+
+    return QIcon(tinted)
 
 
 # ── Nav button ────────────────────────────────────────────────────────────────
 
 class _NavBtn(QPushButton):
-    """Sidebar navigation button with icon + optional text."""
+    """
+    Sidebar navigation button with a real PNG icon + optional text label.
 
-    def __init__(self, icon: str, text: str, parent=None):
+    icon_file : filename inside assets/ (e.g. "home.png")
+    text      : shown in expanded sidebar; tooltip when collapsed
+    fallback  : unicode character used if the PNG file is missing
+    """
+
+    # QSS colour tokens for active/hover tint (must match MAIN_QSS #nav_btn)
+    _COLOUR_NORMAL  = "#9aa0b8"
+    _COLOUR_ACTIVE  = "#bd93f9"   # C_ACCENT
+
+    def __init__(self, icon_file: str, text: str,
+                 fallback: str = "●", parent=None):
         super().__init__(parent)
-        self._icon = icon
-        self._text = text
+        self._text     = text
+        self._fallback = fallback
+        self._expanded = True
+
+        # Load two icon variants: normal (grey) and active (accent)
+        self._icon_normal = _load_icon(icon_file, self._COLOUR_NORMAL)
+        self._icon_active = _load_icon(icon_file, self._COLOUR_ACTIVE)
+        self._icon_file   = icon_file
+        self._has_png     = (not self._icon_normal.isNull()
+                             and (_ASSETS / icon_file).exists())
+
         self.setObjectName("nav_btn")
         self.setCheckable(True)
         self.setAutoExclusive(True)
         self.setCursor(Qt.PointingHandCursor)
-        self.setMinimumHeight(44)
+        self.setMinimumHeight(46)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+
+        # Update icon when check state changes
+        self.toggled.connect(self._on_toggled)
+
         self._set_expanded(True)
 
     def set_expanded(self, expanded: bool):
         self._set_expanded(expanded)
 
     def _set_expanded(self, expanded: bool):
-        if expanded:
-            self.setText(f"  {self._icon}  {self._text}")
-            self.setToolTip("")
-            self.setStyleSheet("")          # back to QSS
+        self._expanded = expanded
+
+        if self._has_png:
+            # Use real PNG icon
+            icon = self._icon_active if self.isChecked() else self._icon_normal
+            self.setIcon(icon)
+            if expanded:
+                self.setIconSize(_ICON_EXPANDED)
+                self.setText(f"  {self._text}")
+                self.setToolTip("")
+                self.setStyleSheet("")   # let QSS handle it
+            else:
+                self.setIconSize(_ICON_COLLAPSED)
+                self.setText("")
+                self.setToolTip(self._text)
+                self.setStyleSheet(
+                    "QPushButton#nav_btn {"
+                    "  text-align: center; padding: 10px 4px;"
+                    "  qproperty-iconSize: 22px 22px;"
+                    "}"
+                    "QPushButton#nav_btn:hover {"
+                    "  background-color: rgba(255,255,255,0.06);"
+                    "  border-left: 3px solid #4a5060;"
+                    "}"
+                    "QPushButton#nav_btn:checked {"
+                    "  background-color: rgba(189,147,249,0.12);"
+                    "  border-left: 3px solid #bd93f9;"
+                    "}"
+                )
         else:
-            self.setText(self._icon)        # icon only, centred
-            self.setToolTip(self._text)
-            # Force center alignment when icon-only
-            self.setStyleSheet(
-                "QPushButton#nav_btn { text-align: center; padding: 10px 4px; font-size: 16pt; }"
-                "QPushButton#nav_btn:hover { background-color: rgba(255,255,255,0.06);"
-                " border-left: 3px solid #4a5060; }"
-                "QPushButton#nav_btn:checked { background-color: rgba(189,147,249,0.12);"
-                " border-left: 3px solid #bd93f9; }"
-            )
+            # Fallback: unicode character
+            if expanded:
+                self.setText(f"  {self._fallback}  {self._text}")
+                self.setToolTip("")
+                self.setStyleSheet("")
+            else:
+                self.setText(self._fallback)
+                self.setToolTip(self._text)
+                self.setStyleSheet(
+                    "QPushButton#nav_btn { text-align: center; padding: 10px 4px; font-size: 16pt; }"
+                    "QPushButton#nav_btn:hover { background-color: rgba(255,255,255,0.06);"
+                    " border-left: 3px solid #4a5060; }"
+                    "QPushButton#nav_btn:checked { background-color: rgba(189,147,249,0.12);"
+                    " border-left: 3px solid #bd93f9; }"
+                )
+
+    def _on_toggled(self, checked: bool):
+        """Swap icon colour when button is checked/unchecked."""
+        if self._has_png:
+            self.setIcon(self._icon_active if checked else self._icon_normal)
 
 
 # ── MainWindow ────────────────────────────────────────────────────────────────
@@ -147,8 +226,8 @@ class MainWindow(QMainWindow):
         sb_lay.setContentsMargins(0, 6, 0, 6)
         sb_lay.setSpacing(2)
 
-        self._nav_home   = _NavBtn("⌂", "主頁")
-        self._nav_config = _NavBtn("⚙", "配置")
+        self._nav_home   = _NavBtn("home.png",    "主頁",  fallback="⌂")
+        self._nav_config = _NavBtn("setting.png", "配置",  fallback="⚙")
         sb_lay.addWidget(self._nav_home)
         sb_lay.addWidget(self._nav_config)
         sb_lay.addStretch(1)

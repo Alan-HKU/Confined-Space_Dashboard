@@ -268,7 +268,7 @@ class SensorCard(QWidget):
         # Name label
         name_alpha = "rgba(160,168,190,0.85)" if cstate == "offline" else "#a0a8be"
         self._lbl_name.setStyleSheet(
-            f"font-size: 20pt; font-weight: 600; letter-spacing: 0.3px;"
+            f"font-size: 25pt; font-weight: 600; letter-spacing: 0.3px;"
             f" color: {name_alpha}; background: transparent; border: none;"
         )
 

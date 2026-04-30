@@ -14,13 +14,14 @@ from PySide6.QtWidgets import (
     QDialog, QStackedWidget, QSizePolicy
 )
 
-from core.config import get, get_sensor
+from core.config   import get, get_sensor
+from core.app_paths import CONFIG_PATH
 from ui.styles   import (C_BG_PANEL, C_BG_SIDEBAR, C_BG_CARD,
                           C_BORDER, C_BORDER_MID,
                           C_TEXT_PRI, C_TEXT_SEC, C_ACCENT, C_ALARM,
                           C_TEXT_DIM, C_NORMAL, C_WARN)
 log = logging.getLogger(__name__)
-CONFIG_PATH = Path("config.ini")
+# CONFIG_PATH is now resolved correctly for both dev and frozen exe
 
 
 # ── Custom message dialog (replaces QMessageBox) ──────────────────────────────
