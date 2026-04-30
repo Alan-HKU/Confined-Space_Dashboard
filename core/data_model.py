@@ -535,12 +535,32 @@ class DataModel:
                 "alarm_enabled": meta.get("alarm_enabled", True),
             })
 
-        # Also compute bound + any_alarm in same pass (no extra lock)
-        any_alarm = bind and any(
+        # Compute any_alarm in same pass:
+        # Sound triggers when:
+        #   - bind=True (explicit bind message received) OR data is actively arriving
+        #   - AND at least one LIVE sensor with alarm_enabled exceeds LV2
+        data_arriving = any(r["s_state"] == SENSOR_LIVE for r in result)
+        effectively_bound = bind or data_arriving   # treat active data as bound
+
+        any_alarm = effectively_bound and any(
             r["s_state"] == SENSOR_LIVE
             and r["level"] == self.ALARM
             and r["alarm_enabled"]
             for r in result
         )
+
+        # Debug log when alarm condition changes (throttled — logged once per state change)
+        alarm_keys = [
+            r["key"] for r in result
+            if r["s_state"] == SENSOR_LIVE
+            and r["level"] == self.ALARM
+            and r["alarm_enabled"]
+        ]
+        if alarm_keys:
+            log.debug(
+                "Alarm check: bind=%s data_arriving=%s effectively_bound=%s "
+                "any_alarm=%s  alarm_keys=%s",
+                bind, data_arriving, effectively_bound, any_alarm, alarm_keys
+            )
 
         return result, bind, any_alarm

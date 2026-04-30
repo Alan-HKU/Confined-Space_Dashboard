@@ -8,17 +8,34 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$SCRIPT_DIR"
 
+# PyInstaller must NOT be run as root
+if [ "$(id -u)" = "0" ]; then
+    echo "錯誤：請不要用 sudo 執行此腳本，直接執行："
+    echo "  bash build_linux.sh"
+    exit 1
+fi
+
+# Fix .venv permission if it was previously created by root
+if [ -d ".venv" ] && [ ! -w ".venv" ]; then
+    echo "檢測到 .venv 目錄權限問題（之前用 sudo 創建），正在修復..."
+    sudo chown -R "$(whoami)":"$(whoami)" .venv
+    echo "權限修復完成"
+fi
+
 BOLD="\033[1m"; GREEN="\033[32m"; RED="\033[31m"; RESET="\033[0m"
 APP_NAME="密閉空間監測系統"
-EXE_NAME="confined_space_monitor"   # ASCII name for the binary (desktop safe)
+EXE_NAME="密閉空間監測系統"   # must match 'name=' in confined_space.spec
 
 echo -e "${BOLD}[1/6] 檢查系統依賴...${RESET}"
 
 if command -v dpkg &>/dev/null; then
     PKGS_NEEDED=()
-    for pkg in libgstreamer1.0-0 gstreamer1.0-plugins-good gstreamer1.0-plugins-bad \
-               libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 \
-               libxcb-randr0 libxcb-render-util0; do
+    for pkg in \
+        libgstreamer1.0-0 gstreamer1.0-plugins-good gstreamer1.0-plugins-bad \
+        gstreamer1.0-alsa gstreamer1.0-pulseaudio \
+        libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 \
+        libxcb-randr0 libxcb-render-util0 \
+        alsa-utils; do
         dpkg -s "$pkg" &>/dev/null 2>&1 || PKGS_NEEDED+=("$pkg")
     done
     if [ ${#PKGS_NEEDED[@]} -gt 0 ]; then
@@ -39,9 +56,7 @@ echo -e "${BOLD}[4/6] 清理舊版本...${RESET}"
 rm -rf dist/ build/
 
 echo -e "${BOLD}[5/6] 打包中（約 2-5 分鐘）...${RESET}"
-python -m PyInstaller confined_space.spec \
-    --noconfirm \
-    --name "$EXE_NAME"
+python -m PyInstaller confined_space.spec --noconfirm
 
 deactivate
 
