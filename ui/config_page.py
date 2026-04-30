@@ -19,7 +19,6 @@ from ui.styles   import (C_BG_PANEL, C_BG_SIDEBAR, C_BG_CARD,
                           C_BORDER, C_BORDER_MID,
                           C_TEXT_PRI, C_TEXT_SEC, C_ACCENT, C_ALARM,
                           C_TEXT_DIM, C_NORMAL, C_WARN)
-
 log = logging.getLogger(__name__)
 CONFIG_PATH = Path("config.ini")
 
@@ -136,6 +135,7 @@ _GENERAL_FIELDS = [
     ("LoggingTime",        "CSV 日誌間隔 (ms)"),
     ("DataReflashTime",    "數據刷新間隔 (ms)"),
     ("MQTTTime",           "MQTT 上行間隔 (ms)"),
+    ("sensor_upload_interval", "傳感器數據上傳間隔 (s)"),
     ("DisplaySwitchTime",  "頁面輪換間隔 (ms)"),
     ("ConnectionTimeOut",  "連接超時 (s)"),
     ("AlarmTimeOut",       "報警超時 (s)"),
@@ -146,6 +146,8 @@ _GENERAL_FIELDS = [
     ("LogLocation",        "CSV 日誌文件路徑"),
     ("log_max_bytes",      "最大日誌文件大小 (bytes)"),
     ("log_backup_count",   "最多備份日誌數量"),
+    ("log_file_level",     "日誌文件記錄級別 (DEBUG/INFO/WARNING)"),
+    ("battery_check_interval", "本機電池輪詢間隔 (s)"),
 ]
 
 _CONNECTION_FIELDS = [
@@ -154,9 +156,11 @@ _CONNECTION_FIELDS = [
     ("private_topic",        "本地訂閱主題"),
     ("public_broker",        "網絡 Broker 地址"),
     ("public_broker_port",   "網絡 Broker 端口"),
-    ("public_topic",         "網絡訂閱主題"),
     ("ping_ip",              "Ping 測試 IP"),
 ]
+
+# Note: public topic prefix is auto-computed as cs/<site_name>/<gateway_id>
+# Edit site_name and gateway_id in GENERAL section above.
 
 _SECTION_MAP: dict[str, str] = {}
 for _k, _ in _GENERAL_FIELDS:    _SECTION_MAP[_k] = "GENERAL"
@@ -320,7 +324,8 @@ class _ConfigForm(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self._fields:  dict[str, QLineEdit]  = {}
-        self._toggles: dict[str, _ToggleBtn] = {}  # sensor_key → toggle
+        self._toggles: dict[str, _ToggleBtn] = {}
+        self._topic_preview: QLineEdit = QLineEdit()   # placeholder, replaced in _add_section
 
         root = QVBoxLayout(self)
         root.setContentsMargins(0, 0, 0, 0)
@@ -405,7 +410,44 @@ class _ConfigForm(QWidget):
             grid.addWidget(inp, row, 1)
             self._fields[key] = inp
 
+        # For CONNECTION section: append auto-computed topic prefix row
+        if cfg_sec == "CONNECTION":
+            row = len(fields)
+            hint_lbl = QLabel("網絡上傳主題（自動）")
+            hint_lbl.setObjectName("cfg_key_label")
+            hint_lbl.setFixedWidth(200)
+            hint_lbl.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+
+            self._topic_preview = QLineEdit()
+            self._topic_preview.setFixedHeight(28)
+            self._topic_preview.setReadOnly(True)
+            self._topic_preview.setToolTip(
+                "自動由 site_name / gateway_id 組合，無需手動填寫\n"
+                "格式: cs/<site_name>/<gateway_id>/(bind|sensor|heartbeat)"
+            )
+            self._topic_preview.setStyleSheet(
+                f"color: {C_TEXT_DIM}; background-color: {C_BG_CARD};"
+                f" border: 1px solid {C_BORDER}; border-radius: 5px; padding: 4px 8px;"
+            )
+            self._update_topic_preview()
+
+            # Update preview whenever site_name or gateway_id changes
+            if "site_name" in self._fields:
+                self._fields["site_name"].textChanged.connect(
+                    lambda _: self._update_topic_preview())
+            if "gateway_id" in self._fields:
+                self._fields["gateway_id"].textChanged.connect(
+                    lambda _: self._update_topic_preview())
+
+            grid.addWidget(hint_lbl,           row, 0)
+            grid.addWidget(self._topic_preview, row, 1)
+
         self._form_lay.addLayout(grid)
+
+    def _update_topic_preview(self):
+        site = (self._fields.get("site_name") or QLineEdit()).text().strip() or "site_001"
+        gw   = (self._fields.get("gateway_id") or QLineEdit()).text().strip() or "GW_01"
+        self._topic_preview.setText(f"cs/{site}/{gw}/(bind | sensor | heartbeat)")
 
     def _add_alarm_section(self):
         """Per-sensor alarm enable/disable toggles."""

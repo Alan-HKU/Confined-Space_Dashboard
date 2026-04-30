@@ -1,12 +1,17 @@
 """
 status_bar.py — Bottom status bar.
 
-Left  : clock
-Middle: device battery chips (device_id ≠ 0), local machine battery + charge
-Right : 本地MQTT · 網絡MQTT · 數據綁定 · version
+Local battery is read by a background BatteryMonitor thread:
+  - Polls every battery_check_interval seconds (configurable, default 30s)
+  - BUT also checks the charging state every 1 second and fires immediately
+    if power_plugged has changed (plug/unplug detected within ~1s)
+  - Communicates to the Qt thread via a Qt signal (thread-safe)
 """
 
 import logging
+import threading
+import time
+
 try:
     import psutil
     _PSUTIL = True
@@ -14,15 +19,15 @@ except ImportError:
     _PSUTIL = False
     logging.getLogger(__name__).warning("psutil not installed — local battery unavailable")
 
-from PySide6.QtCore    import Qt
+from PySide6.QtCore    import Qt, Signal, QObject
 from PySide6.QtWidgets import QWidget, QHBoxLayout, QLabel, QFrame
 
+from core.config import get
 from ui.styles import (C_BG_SIDEBAR, C_BORDER, C_BORDER_MID,
                        C_TEXT_PRI, C_TEXT_SEC, C_TEXT_DIM,
                        C_NORMAL, C_ALARM, C_WARN, C_ACCENT)
 
 VERSION = "v2.0.0"
-
 log = logging.getLogger(__name__)
 
 
@@ -31,6 +36,113 @@ def _battery_colour(pct: int) -> str:
     if pct >= 20: return C_WARN
     return C_ALARM
 
+
+def _batt_icon(pct: int, charging: bool) -> str:
+    if charging: return "⚡"
+    if pct >= 50: return "🔋"
+    return "🪫"
+
+
+# ── Battery monitor (background thread + Qt signal) ───────────────────────────
+
+class _BatterySignals(QObject):
+    """Carrier for the battery-update signal (must live in Qt thread)."""
+    updated = Signal(str, str)   # (text, colour)
+
+
+class BatteryMonitor:
+    """
+    Background thread that watches local battery.
+
+    - Reads full battery info every `interval` seconds (configurable).
+    - Checks power_plugged every 1 second; if it changes, fires immediately
+      so plug/unplug is reflected within ~1 second regardless of interval.
+    - Emits signals.updated(text, colour) — safe to connect to QLabel.
+    """
+
+    def __init__(self, interval: float = 30.0):
+        self._interval   = max(1.0, float(interval))
+        self.signals     = _BatterySignals()
+        self._last_plug  = None   # last known power_plugged state
+        self._running    = False
+        self._thread: threading.Thread | None = None
+
+    def start(self) -> "BatteryMonitor":
+        if not _PSUTIL:
+            self.signals.updated.emit("本機: N/A", C_TEXT_DIM)
+            return self
+        self._running = True
+        self._thread = threading.Thread(
+            target=self._run, name="batt_monitor", daemon=True
+        )
+        self._thread.start()
+        return self
+
+    def stop(self):
+        self._running = False
+
+    def _run(self):
+        # Immediate first read so display is populated at startup
+        self._read_and_emit()
+
+        elapsed = 0.0
+        while self._running:
+            time.sleep(1.0)
+            elapsed += 1.0
+
+            # Always check plug state every second for instant change detection
+            plug_changed = self._check_plug_changed()
+
+            # Full update if: interval elapsed OR charging state just changed
+            if plug_changed or elapsed >= self._interval:
+                self._read_and_emit()
+                if not plug_changed:
+                    elapsed = 0.0
+                else:
+                    # Reset timer after a plug event too
+                    elapsed = 0.0
+
+    def _check_plug_changed(self) -> bool:
+        """Return True if power_plugged state differs from last known."""
+        try:
+            batt = psutil.sensors_battery()
+            if batt is None:
+                return False
+            current_plug = batt.power_plugged
+            if self._last_plug is None:
+                self._last_plug = current_plug
+                return False
+            if current_plug != self._last_plug:
+                log.info("Battery charge state changed → %s",
+                         "charging" if current_plug else "discharging")
+                self._last_plug = current_plug
+                return True
+        except Exception:
+            pass
+        return False
+
+    def _read_and_emit(self):
+        try:
+            batt = psutil.sensors_battery()
+            if batt is None:
+                self.signals.updated.emit("本機: 無電池", C_TEXT_DIM)
+                return
+            pct      = int(batt.percent)
+            charging = batt.power_plugged
+            self._last_plug = charging
+
+            icon    = _batt_icon(pct, charging)
+            colour  = C_ACCENT if charging else _battery_colour(pct)
+            suffix  = " 充電中" if charging else ""
+            text    = f"本機 {icon} {pct}%{suffix}"
+            self.signals.updated.emit(text, colour)
+            log.debug("Battery: %s  charging=%s", text, charging)
+        except Exception as exc:
+            log.debug("Battery read error: %s", exc)
+            self.signals.updated.emit("", C_TEXT_DIM)
+
+
+# ── StatusBar ─────────────────────────────────────────────────────────────────
 
 class StatusBar(QWidget):
     def __init__(self, parent=None):
@@ -63,8 +175,6 @@ class StatusBar(QWidget):
         self._batt_lay.setContentsMargins(0, 0, 0, 0)
         self._batt_lay.setSpacing(0)
         self._lay.addWidget(self._batt_frame)
-
-        # {device_id: QLabel}  — created on demand
         self._dev_labels: dict[str, QLabel] = {}
 
         # ── Local machine battery ──────────────────────────────────
@@ -74,6 +184,12 @@ class StatusBar(QWidget):
             f"color:{C_TEXT_SEC}; font-size:8pt; background:transparent; border:none;"
         )
         self._batt_lay.addWidget(self._lbl_local_batt)
+
+        # Start battery monitor thread
+        interval = float(get("battery_check_interval") or 30)
+        self._batt_monitor = BatteryMonitor(interval=interval)
+        self._batt_monitor.signals.updated.connect(self._on_battery_update)
+        self._batt_monitor.start()
 
         self._lay.addStretch(1)
 
@@ -91,6 +207,18 @@ class StatusBar(QWidget):
         )
         self._lay.addWidget(lbl_ver)
         self._lay.addSpacing(16)
+
+    # ── Battery signal slot (Qt thread) ──────────────────────────────────────
+
+    def _on_battery_update(self, text: str, colour: str) -> None:
+        self._lbl_local_batt.setText(text)
+        self._lbl_local_batt.setStyleSheet(
+            f"color:{colour}; font-size:8pt; background:transparent; border:none;"
+        )
+
+    def stop_monitor(self) -> None:
+        """Call on window close."""
+        self._batt_monitor.stop()
 
     # ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -135,14 +263,10 @@ class StatusBar(QWidget):
     def set_bind_status(self, on: bool)  -> None: self._set_dot(self._dot_bind, on)
 
     def update_device_batteries(self, batteries: dict[str, int]) -> None:
-        """
-        batteries: {device_id_str: percent}  (device_id "0" already excluded)
-        Creates / updates small battery chip labels dynamically.
-        """
         for dev_id, pct in sorted(batteries.items()):
-            icon = _batt_icon(pct)
+            icon   = _batt_icon(pct, False)
             colour = _battery_colour(pct)
-            text = f"Dev{dev_id} {icon} {pct}%"
+            text   = f"Dev{dev_id} {icon} {pct}%"
             if dev_id not in self._dev_labels:
                 lbl = QLabel(text)
                 lbl.setStyleSheet(
@@ -150,7 +274,7 @@ class StatusBar(QWidget):
                     " background:transparent; border:none; padding-right:6px;"
                 )
                 self._batt_lay.insertWidget(
-                    self._batt_lay.count() - 2,  # before local battery
+                    self._batt_lay.count() - 2,
                     lbl
                 )
                 self._dev_labels[dev_id] = lbl
@@ -163,32 +287,6 @@ class StatusBar(QWidget):
                 )
 
     def update_local_battery(self) -> None:
-        """Read host machine battery via psutil and update label."""
-        if not _PSUTIL:
-            self._lbl_local_batt.setText("本機: N/A")
-            return
-        try:
-            batt = psutil.sensors_battery()
-            if batt is None:
-                self._lbl_local_batt.setText("本機: 無電池")
-                return
-            pct       = int(batt.percent)
-            charging  = batt.power_plugged
-            icon      = "⚡" if charging else _batt_icon(pct)
-            colour    = C_ACCENT if charging else _battery_colour(pct)
-            charge_str = " 充電中" if charging else ""
-            self._lbl_local_batt.setText(f"本機 {icon} {pct}%{charge_str}")
-            self._lbl_local_batt.setStyleSheet(
-                f"color:{colour}; font-size:8pt;"
-                " background:transparent; border:none;"
-            )
-        except Exception as e:
-            log.debug("Battery read error: %s", e)
-            self._lbl_local_batt.setText("")
+        """No-op — battery is now updated by BatteryMonitor thread via signal."""
+        pass
 
-
-def _batt_icon(pct: int) -> str:
-    if pct >= 80: return "🔋"
-    if pct >= 50: return "🔋"
-    if pct >= 20: return "🪫"
-    return "🪫"

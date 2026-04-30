@@ -52,13 +52,20 @@ class MQTTClient:
             self._connected = True
             log.info("MQTT [%s] connected to %s:%d", self.role, self.broker, self.port)
             data_model.set_mqtt_status(self.role, True)
-            client.subscribe(self.topic)
+            if self.topic:          # None = publish-only, skip subscribe
+                client.subscribe(self.topic)
+                log.info("MQTT [%s] subscribed to %s", self.role, self.topic)
         else:
             self._connected = False
             log.warning("MQTT [%s] connect failed rc=%d", self.role, rc)
             data_model.set_mqtt_status(self.role, False)
 
     def _on_message(self, client, userdata, msg):
+        try:
+            payload_str = msg.payload.decode("utf-8")
+        except Exception:
+            payload_str = repr(msg.payload)
+        log.debug("MQTT [%s] ← topic=%s  payload=%s", self.role, msg.topic, payload_str)
         data_model.add_msg_to_buffer(msg)
 
     def _on_disconnect(self, client, userdata, rc):

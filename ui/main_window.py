@@ -147,8 +147,8 @@ class MainWindow(QMainWindow):
         sb_lay.setContentsMargins(0, 6, 0, 6)
         sb_lay.setSpacing(2)
 
-        self._nav_home   = _NavBtn("🌐", "主頁")
-        self._nav_config = _NavBtn("🔨", "配置")
+        self._nav_home   = _NavBtn("⌂", "主頁")
+        self._nav_config = _NavBtn("⚙", "配置")
         sb_lay.addWidget(self._nav_home)
         sb_lay.addWidget(self._nav_config)
         sb_lay.addStretch(1)
@@ -231,18 +231,16 @@ class MainWindow(QMainWindow):
         t_gui.timeout.connect(self._on_gui_tick)
         t_gui.start(get("GUIReflashTime") or 1000)
 
+        # Backup buffer drain
         t_data = QTimer(self)
         t_data.timeout.connect(self._data.get)
         t_data.start(get("DataReflashTime") or 2000)
-
-        t_log = QTimer(self)
-        t_log.timeout.connect(self._data.log)
-        t_log.start(get("LoggingTime") or 30000)
+        # Note: CSV log timer lives in main.py to avoid duplication
 
     # ── GUI tick ──────────────────────────────────────────────────────────────
 
     def _on_gui_tick(self):
-        # Drain MQTT buffer first — instant bind/unbind response
+        # Drain MQTT buffer first for instant bind/unbind response
         self._data.get()
 
         now = datetime.now().strftime("%Y-%m-%d  %H:%M:%S")
@@ -250,31 +248,31 @@ class MainWindow(QMainWindow):
         self._status_bar.set_private_mqtt(get_mqtt_status("private"))
         self._status_bar.set_public_mqtt(get_mqtt_status("public"))
 
-        # Bind state driven by explicit MQTT {"status":"bind"/"unbind"} message
-        bound = self._data.is_bound()
+        # Single lock acquisition for all sensor data + bind + alarm
+        sensor_rows, bound, lv2_alarm = self._data.snapshot_for_gui()
+
         self._status_bar.set_bind_status(bound)
 
-        # Alarm: only when bound AND at least one LIVE sensor exceeds LV2
-        # Error/Offline sensors are NOT alarm conditions
-        lv2_alarm = bound and self._data.any_alarm()
         flash = self._alarm_ctrl.tick(lv2_alarm)
 
-        for key in self._data.sensor_keys():
-            s_state    = self._data.sensor_state(key)
-            level      = self._data.alarm_level(key)
-            value      = self._data.reading(key)
-            dev_id     = self._data.device_id(key)
-            stale      = s_state in ("offline", "waiting")
-            card_flash = flash and (level == "alarm") and s_state == "live"
+        for row in sensor_rows:
+            key        = row["key"]
+            s_state    = row["s_state"]
+            card_flash = flash and (row["level"] == "alarm") and s_state == "live"
             self._grid.update_sensor(
-                key, value, dev_id, level, stale,
-                flash=card_flash,
-                has_timestamp=self._data.has_timestamp(key),
-                sensor_state=s_state,
+                key,
+                row["value"],
+                row["device_id"],
+                row["level"],
+                row["stale"],
+                flash        = card_flash,
+                has_timestamp = row["has_ts"],
+                sensor_state  = s_state,
             )
 
+        # Device battery: update every tick (values change rarely, cheap dict copy)
         self._status_bar.update_device_batteries(self._data.get_device_batteries())
-        self._status_bar.update_local_battery()
+        # Local battery is handled by BatteryMonitor thread via Qt signal
 
     # ── Qt events ─────────────────────────────────────────────────────────────
 
@@ -288,5 +286,6 @@ class MainWindow(QMainWindow):
 
     def closeEvent(self, event):
         self._alarm_ctrl.stop()
+        self._status_bar.stop_monitor()
         super().closeEvent(event)
 

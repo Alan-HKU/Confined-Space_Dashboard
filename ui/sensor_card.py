@@ -40,18 +40,23 @@ class SensorCard(QWidget):
 
     def __init__(self, sensor_key: str, meta: dict, parent=None):
         super().__init__(parent)
-        self._key          = sensor_key
-        self._meta         = meta
-        self._level        = "normal"
-        self._ever_received = False   # goes True on first non-None value
+        self._key           = sensor_key
+        self._meta          = meta
+        self._level         = "normal"
+        self._ever_received = False
+        self._flash_state   = False
+
+        # Cache last rendered state to avoid redundant setStyleSheet/setText
+        self._last_value_text   = ""
+        self._last_val_colour   = ""
+        self._last_device_text  = ""
+        self._last_border_state = ("normal", False, None)  # (level, flash, override)
 
         self.setObjectName("sensor_card")
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self._build_ui()
         self._apply_card_style("normal", flash=False)
-
-        # Hide until first data
-        self.setVisible(False)
+        self.setVisible(False)   # hidden until first data
 
     # ── Layout ────────────────────────────────────────────────────────────────
 
@@ -103,12 +108,12 @@ class SensorCard(QWidget):
         value:         float | None,
         device_id:     str,
         level:         str,
-        stale:         bool,          # kept for compat; use sensor_state when possible
+        stale:         bool,
         flash:         bool = False,
         has_timestamp: bool = False,
         sensor_state:  str  = SENSOR_WAITING,
     ) -> None:
-        """Update the card. Shows on first MQTT message (any state except WAITING)."""
+        """Update card. Skips no-op redraws for performance."""
 
         if not self._ever_received and sensor_state != SENSOR_WAITING:
             self._ever_received = True
@@ -117,44 +122,55 @@ class SensorCard(QWidget):
         if not self._ever_received:
             return
 
-        # ── Value text & colour based on sensor_state ─────────────────────
+        # ── Compute desired text + colour ──────────────────────────────────
+        border_override = None
+
         if sensor_state == SENSOR_OFFLINE:
-            self._lbl_value.setText("離線")
-            val_colour = C_TEXT_DIM
-            border_override = "#555a66"   # grey border for offline
-
+            new_text    = "離線"
+            val_colour  = C_TEXT_DIM
+            border_override = "#555a66"
         elif sensor_state == SENSOR_ERROR:
-            # Error = sensor fault, value unavailable — show dash like normal no-data
-            self._lbl_value.setText("—")
-            val_colour = C_TEXT_SEC
-            border_override = None
-
+            new_text    = "—"
+            val_colour  = C_TEXT_SEC
         elif value is None:
-            self._lbl_value.setText("—")
-            val_colour = C_TEXT_DIM
-            border_override = None
-
+            new_text    = "—"
+            val_colour  = C_TEXT_DIM
         else:
             unit = self._meta.get("unit", "")
             if unit in ("exist", "alarm"):
-                self._lbl_value.setText("是" if value >= 1 else "否")
+                new_text = "是" if value >= 1 else "否"
             elif value == int(value):
-                self._lbl_value.setText(str(int(value)))
+                new_text = str(int(value))
             elif abs(value) < 10:
-                self._lbl_value.setText(f"{value:.2f}")
+                new_text = f"{value:.2f}"
             else:
-                self._lbl_value.setText(f"{value:.1f}")
-            val_colour     = _LEVEL_VALUE_COLOUR.get(level, C_TEXT_PRI)
-            border_override = None
+                new_text = f"{value:.1f}"
+            val_colour  = _LEVEL_VALUE_COLOUR.get(level, C_TEXT_PRI)
 
-        self._lbl_value.setStyleSheet(
+        new_val_style = (
             f"font-size: 30pt; font-weight: bold; color: {val_colour};"
             f" background: transparent; border: none;"
         )
 
-        self._lbl_device.setText(device_id or "")
+        # ── Only call Qt APIs when something actually changed ──────────────
+        if new_text != self._last_value_text:
+            self._lbl_value.setText(new_text)
+            self._last_value_text = new_text
+
+        if new_val_style != self._last_val_colour:
+            self._lbl_value.setStyleSheet(new_val_style)
+            self._last_val_colour = new_val_style
+
+        dev_text = device_id or ""
+        if dev_text != self._last_device_text:
+            self._lbl_device.setText(dev_text)
+            self._last_device_text = dev_text
+
         self._level = level
-        self._apply_card_style(level, flash, border_override=border_override)
+        new_border  = (level, flash, border_override)
+        if new_border != self._last_border_state:
+            self._apply_card_style(level, flash, border_override=border_override)
+            self._last_border_state = new_border
 
     def flash_toggle(self) -> None:
         if self._level == "alarm":
