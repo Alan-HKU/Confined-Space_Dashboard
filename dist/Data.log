@@ -12810,3 +12810,394 @@
 2026-04-30 15:23:17 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:16.899Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "gas_ch4", "display_name": "甲烷 (CH4)", "value": "Error", "unit": "%LEL", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 5], "lv2_range": [0, 10]}
 2026-04-30 15:23:17 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:16.900Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "gas_ex", "display_name": "易燃氣體 (EX)", "value": "Error", "unit": "%LEL", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 10], "lv2_range": [0, 10]}
 2026-04-30 15:23:17 [DEBUG] core.publisher: Flushed 11 sensor readings to cs/STP Office2/sam_testing/sensor
+2026-04-30 15:23:17 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 0, "air_flow": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:17 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "air_humidity": 56.4, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:17 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "air_temperature": 24.5, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:17 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_pm2.5": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:17 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "water_level": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:17 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_o2": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:17 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_co2": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:17 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_co": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:17 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_h2s": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:17 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_ch4": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:17 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_ex": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:17 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"status": "bind"}
+2026-04-30 15:23:17 [DEBUG] core.data_model: RX [B] sensor=air_flow             val=0.0        device=0
+2026-04-30 15:23:17 [DEBUG] core.data_model: Updated air_flow             = 0.0         device=0
+2026-04-30 15:23:17 [DEBUG] core.data_model: RX [B] sensor=air_humidity         val=56.4       device=1
+2026-04-30 15:23:17 [DEBUG] core.data_model: Updated air_humidity         = 56.4        device=1
+2026-04-30 15:23:17 [DEBUG] core.data_model: RX [B] sensor=air_temperature      val=24.5       device=1
+2026-04-30 15:23:17 [DEBUG] core.data_model: Updated air_temperature      = 24.5        device=1
+2026-04-30 15:23:17 [DEBUG] core.data_model: RX [B] sensor=gas_pm2.5            val=0.0        device=1
+2026-04-30 15:23:17 [DEBUG] core.data_model: Updated gas_pm2.5            = 0.0         device=1
+2026-04-30 15:23:17 [DEBUG] core.data_model: RX [B] sensor=water_level          val=0.0        device=1
+2026-04-30 15:23:17 [DEBUG] core.data_model: Updated water_level          = 0.0         device=1
+2026-04-30 15:23:17 [DEBUG] core.data_model: RX [B] sensor=gas_o2               val=Error      device=1
+2026-04-30 15:23:17 [DEBUG] core.data_model: Error reading  gas_o2                device=1
+2026-04-30 15:23:17 [DEBUG] core.data_model: RX [B] sensor=gas_co2              val=Error      device=1
+2026-04-30 15:23:17 [DEBUG] core.data_model: Error reading  gas_co2               device=1
+2026-04-30 15:23:17 [DEBUG] core.data_model: RX [B] sensor=gas_co               val=Error      device=1
+2026-04-30 15:23:17 [DEBUG] core.data_model: Error reading  gas_co                device=1
+2026-04-30 15:23:17 [DEBUG] core.data_model: RX [B] sensor=gas_h2s              val=Error      device=1
+2026-04-30 15:23:17 [DEBUG] core.data_model: Error reading  gas_h2s               device=1
+2026-04-30 15:23:17 [DEBUG] core.data_model: RX [B] sensor=gas_ch4              val=Error      device=1
+2026-04-30 15:23:17 [DEBUG] core.data_model: Error reading  gas_ch4               device=1
+2026-04-30 15:23:17 [DEBUG] core.data_model: RX [B] sensor=gas_ex               val=Error      device=1
+2026-04-30 15:23:17 [DEBUG] core.data_model: Error reading  gas_ex                device=1
+2026-04-30 15:23:17 [INFO] core.data_model: System BIND (topic=Confined_Space/site_name/sensor_data)
+2026-04-30 15:23:18 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"status": "bind"}
+2026-04-30 15:23:18 [INFO] core.data_model: System BIND (topic=Confined_Space/site_name/sensor_data)
+2026-04-30 15:23:19 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 0, "air_flow": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:19 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "air_humidity": 56.4, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:19 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "air_temperature": 24.5, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:19 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_pm2.5": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:19 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "water_level": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:19 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_o2": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:19 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_co2": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:19 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"status": "bind"}
+2026-04-30 15:23:19 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_co": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:19 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_h2s": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:19 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_ch4": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:19 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_ex": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:19 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"cpu_percent": "0.0%", "cpu_temp_c": "46.7°C", "memory_mb": "20.1", "system_memory_percent": "43.0%", "thread_count": 9, "uptime": "21:46:31"}
+2026-04-30 15:23:19 [DEBUG] core.data_model: RX [B] sensor=air_flow             val=0.0        device=0
+2026-04-30 15:23:19 [DEBUG] core.data_model: Updated air_flow             = 0.0         device=0
+2026-04-30 15:23:19 [DEBUG] core.data_model: RX [B] sensor=air_humidity         val=56.4       device=1
+2026-04-30 15:23:19 [DEBUG] core.data_model: Updated air_humidity         = 56.4        device=1
+2026-04-30 15:23:19 [DEBUG] core.data_model: RX [B] sensor=air_temperature      val=24.5       device=1
+2026-04-30 15:23:19 [DEBUG] core.data_model: Updated air_temperature      = 24.5        device=1
+2026-04-30 15:23:19 [DEBUG] core.data_model: RX [B] sensor=gas_pm2.5            val=0.0        device=1
+2026-04-30 15:23:19 [DEBUG] core.data_model: Updated gas_pm2.5            = 0.0         device=1
+2026-04-30 15:23:19 [DEBUG] core.data_model: RX [B] sensor=water_level          val=0.0        device=1
+2026-04-30 15:23:19 [DEBUG] core.data_model: Updated water_level          = 0.0         device=1
+2026-04-30 15:23:19 [DEBUG] core.data_model: RX [B] sensor=gas_o2               val=Error      device=1
+2026-04-30 15:23:19 [DEBUG] core.data_model: Error reading  gas_o2                device=1
+2026-04-30 15:23:19 [DEBUG] core.data_model: RX [B] sensor=gas_co2              val=Error      device=1
+2026-04-30 15:23:19 [DEBUG] core.data_model: Error reading  gas_co2               device=1
+2026-04-30 15:23:19 [INFO] core.data_model: System BIND (topic=Confined_Space/site_name/sensor_data)
+2026-04-30 15:23:19 [DEBUG] core.data_model: RX [B] sensor=gas_co               val=Error      device=1
+2026-04-30 15:23:19 [DEBUG] core.data_model: Error reading  gas_co                device=1
+2026-04-30 15:23:19 [DEBUG] core.data_model: RX [B] sensor=gas_h2s              val=Error      device=1
+2026-04-30 15:23:19 [DEBUG] core.data_model: Error reading  gas_h2s               device=1
+2026-04-30 15:23:19 [DEBUG] core.data_model: RX [B] sensor=gas_ch4              val=Error      device=1
+2026-04-30 15:23:19 [DEBUG] core.data_model: Error reading  gas_ch4               device=1
+2026-04-30 15:23:19 [DEBUG] core.data_model: RX [B] sensor=gas_ex               val=Error      device=1
+2026-04-30 15:23:19 [DEBUG] core.data_model: Error reading  gas_ex                device=1
+2026-04-30 15:23:20 [DEBUG] core.data_model: Unrecognised key: system_memory_percent
+2026-04-30 15:23:20 [WARNING] core.data_model: No sensor keys in payload: ['cpu_percent', 'cpu_temp_c', 'memory_mb', 'system_memory_percent', 'thread_count', 'uptime']  (topic=Confined_Space/site_name/sensor_data)
+2026-04-30 15:23:20 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"status": "bind"}
+2026-04-30 15:23:20 [INFO] core.data_model: System BIND (topic=Confined_Space/site_name/sensor_data)
+2026-04-30 15:23:21 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"status": "bind"}
+2026-04-30 15:23:21 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 0, "air_flow": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:21 [INFO] core.data_model: System BIND (topic=Confined_Space/site_name/sensor_data)
+2026-04-30 15:23:21 [DEBUG] core.data_model: RX [B] sensor=air_flow             val=0.0        device=0
+2026-04-30 15:23:21 [DEBUG] core.data_model: Updated air_flow             = 0.0         device=0
+2026-04-30 15:23:22 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "air_humidity": 56.4, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:22 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "air_temperature": 24.5, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:22 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_pm2.5": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:22 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "water_level": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:22 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_o2": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:22 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_co2": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:22 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_co": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:22 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_h2s": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:22 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_ch4": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:22 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_ex": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:22 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:21.997Z", "node_id": 0, "device_id": 0, "bind": true, "sensor_type": "air_flow", "display_name": "風速", "value": 0.0, "unit": "m/s", "battery": null, "signal": null, "alarm": true, "alarm_level": "LV1", "lv1_range": [1, 100], "lv2_range": [0, 100]}
+2026-04-30 15:23:22 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:19.994Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "air_humidity", "display_name": "相對濕度", "value": 56.4, "unit": "%RH", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 100], "lv2_range": [0, 100]}
+2026-04-30 15:23:22 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:19.995Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "air_temperature", "display_name": "氣溫", "value": 24.5, "unit": "°C", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 100], "lv2_range": [0, 100]}
+2026-04-30 15:23:22 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:19.996Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "gas_pm2.5", "display_name": "PM2.5", "value": 0.0, "unit": "ug/m3", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 1000], "lv2_range": [0, 1000]}
+2026-04-30 15:23:22 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:19.996Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "water_level", "display_name": "水位", "value": 0.0, "unit": "exist", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 0.1], "lv2_range": [0, 0.1]}
+2026-04-30 15:23:22 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:19.997Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "gas_o2", "display_name": "氧氣 (O2)", "value": "Error", "unit": "%Vol", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [20, 21], "lv2_range": [19.5, 22]}
+2026-04-30 15:23:22 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:19.997Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "gas_co2", "display_name": "二氧化碳 (CO2)", "value": "Error", "unit": "PPM", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 2000], "lv2_range": [0, 2000]}
+2026-04-30 15:23:22 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:19.998Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "gas_co", "display_name": "一氧化碳 (CO)", "value": "Error", "unit": "ppm", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 37.5], "lv2_range": [0, 75]}
+2026-04-30 15:23:22 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:19.998Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "gas_h2s", "display_name": "硫化氫 (H2S)", "value": "Error", "unit": "ppm", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 7.5], "lv2_range": [0, 10]}
+2026-04-30 15:23:22 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:19.999Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "gas_ch4", "display_name": "甲烷 (CH4)", "value": "Error", "unit": "%LEL", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 5], "lv2_range": [0, 10]}
+2026-04-30 15:23:22 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:20.000Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "gas_ex", "display_name": "易燃氣體 (EX)", "value": "Error", "unit": "%LEL", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 10], "lv2_range": [0, 10]}
+2026-04-30 15:23:22 [DEBUG] core.publisher: Flushed 11 sensor readings to cs/STP Office2/sam_testing/sensor
+2026-04-30 15:23:22 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"status": "bind"}
+2026-04-30 15:23:22 [DEBUG] core.data_model: RX [B] sensor=air_humidity         val=56.4       device=1
+2026-04-30 15:23:22 [DEBUG] core.data_model: Updated air_humidity         = 56.4        device=1
+2026-04-30 15:23:22 [DEBUG] core.data_model: RX [B] sensor=air_temperature      val=24.5       device=1
+2026-04-30 15:23:22 [DEBUG] core.data_model: Updated air_temperature      = 24.5        device=1
+2026-04-30 15:23:22 [DEBUG] core.data_model: RX [B] sensor=gas_pm2.5            val=0.0        device=1
+2026-04-30 15:23:22 [DEBUG] core.data_model: Updated gas_pm2.5            = 0.0         device=1
+2026-04-30 15:23:22 [DEBUG] core.data_model: RX [B] sensor=water_level          val=0.0        device=1
+2026-04-30 15:23:22 [DEBUG] core.data_model: Updated water_level          = 0.0         device=1
+2026-04-30 15:23:22 [DEBUG] core.data_model: RX [B] sensor=gas_o2               val=Error      device=1
+2026-04-30 15:23:22 [DEBUG] core.data_model: Error reading  gas_o2                device=1
+2026-04-30 15:23:22 [DEBUG] core.data_model: RX [B] sensor=gas_co2              val=Error      device=1
+2026-04-30 15:23:22 [DEBUG] core.data_model: Error reading  gas_co2               device=1
+2026-04-30 15:23:22 [DEBUG] core.data_model: RX [B] sensor=gas_co               val=Error      device=1
+2026-04-30 15:23:22 [DEBUG] core.data_model: Error reading  gas_co                device=1
+2026-04-30 15:23:22 [DEBUG] core.data_model: RX [B] sensor=gas_h2s              val=Error      device=1
+2026-04-30 15:23:22 [DEBUG] core.data_model: Error reading  gas_h2s               device=1
+2026-04-30 15:23:22 [DEBUG] core.data_model: RX [B] sensor=gas_ch4              val=Error      device=1
+2026-04-30 15:23:22 [DEBUG] core.data_model: Error reading  gas_ch4               device=1
+2026-04-30 15:23:22 [DEBUG] core.data_model: RX [B] sensor=gas_ex               val=Error      device=1
+2026-04-30 15:23:22 [DEBUG] core.data_model: Error reading  gas_ex                device=1
+2026-04-30 15:23:22 [INFO] core.data_model: System BIND (topic=Confined_Space/site_name/sensor_data)
+2026-04-30 15:23:23 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"status": "bind"}
+2026-04-30 15:23:23 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 0, "air_flow": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:23 [INFO] core.data_model: System BIND (topic=Confined_Space/site_name/sensor_data)
+2026-04-30 15:23:23 [DEBUG] core.data_model: RX [B] sensor=air_flow             val=0.0        device=0
+2026-04-30 15:23:23 [DEBUG] core.data_model: Updated air_flow             = 0.0         device=0
+2026-04-30 15:23:24 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "air_humidity": 56.4, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:24 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "air_temperature": 24.5, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:24 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_pm2.5": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:24 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "water_level": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:24 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_o2": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:24 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_co2": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:24 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_co": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:24 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_h2s": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:24 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_ch4": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:24 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_ex": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:24 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"status": "bind"}
+2026-04-30 15:23:24 [DEBUG] core.data_model: RX [B] sensor=air_humidity         val=56.4       device=1
+2026-04-30 15:23:24 [DEBUG] core.data_model: Updated air_humidity         = 56.4        device=1
+2026-04-30 15:23:24 [DEBUG] core.data_model: RX [B] sensor=air_temperature      val=24.5       device=1
+2026-04-30 15:23:24 [DEBUG] core.data_model: Updated air_temperature      = 24.5        device=1
+2026-04-30 15:23:24 [DEBUG] core.data_model: RX [B] sensor=gas_pm2.5            val=0.0        device=1
+2026-04-30 15:23:24 [DEBUG] core.data_model: Updated gas_pm2.5            = 0.0         device=1
+2026-04-30 15:23:24 [DEBUG] core.data_model: RX [B] sensor=water_level          val=0.0        device=1
+2026-04-30 15:23:24 [DEBUG] core.data_model: Updated water_level          = 0.0         device=1
+2026-04-30 15:23:24 [DEBUG] core.data_model: RX [B] sensor=gas_o2               val=Error      device=1
+2026-04-30 15:23:24 [DEBUG] core.data_model: Error reading  gas_o2                device=1
+2026-04-30 15:23:24 [DEBUG] core.data_model: RX [B] sensor=gas_co2              val=Error      device=1
+2026-04-30 15:23:24 [DEBUG] core.data_model: Error reading  gas_co2               device=1
+2026-04-30 15:23:24 [DEBUG] core.data_model: RX [B] sensor=gas_co               val=Error      device=1
+2026-04-30 15:23:24 [DEBUG] core.data_model: Error reading  gas_co                device=1
+2026-04-30 15:23:24 [DEBUG] core.data_model: RX [B] sensor=gas_h2s              val=Error      device=1
+2026-04-30 15:23:24 [DEBUG] core.data_model: Error reading  gas_h2s               device=1
+2026-04-30 15:23:24 [DEBUG] core.data_model: RX [B] sensor=gas_ch4              val=Error      device=1
+2026-04-30 15:23:24 [DEBUG] core.data_model: Error reading  gas_ch4               device=1
+2026-04-30 15:23:24 [DEBUG] core.data_model: RX [B] sensor=gas_ex               val=Error      device=1
+2026-04-30 15:23:24 [DEBUG] core.data_model: Error reading  gas_ex                device=1
+2026-04-30 15:23:24 [INFO] core.data_model: System BIND (topic=Confined_Space/site_name/sensor_data)
+2026-04-30 15:23:25 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"status": "bind"}
+2026-04-30 15:23:25 [INFO] core.data_model: System BIND (topic=Confined_Space/site_name/sensor_data)
+2026-04-30 15:23:26 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 0, "air_flow": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:26 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "air_humidity": 56.4, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:26 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "air_temperature": 24.5, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:26 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_pm2.5": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:26 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "water_level": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:26 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_o2": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:26 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_co2": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:26 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_co": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:26 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_h2s": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:26 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_ch4": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:26 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_ex": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:26 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"status": "bind"}
+2026-04-30 15:23:26 [DEBUG] core.data_model: RX [B] sensor=air_flow             val=0.0        device=0
+2026-04-30 15:23:26 [DEBUG] core.data_model: Updated air_flow             = 0.0         device=0
+2026-04-30 15:23:26 [DEBUG] core.data_model: RX [B] sensor=air_humidity         val=56.4       device=1
+2026-04-30 15:23:26 [DEBUG] core.data_model: Updated air_humidity         = 56.4        device=1
+2026-04-30 15:23:26 [DEBUG] core.data_model: RX [B] sensor=air_temperature      val=24.5       device=1
+2026-04-30 15:23:26 [DEBUG] core.data_model: Updated air_temperature      = 24.5        device=1
+2026-04-30 15:23:26 [DEBUG] core.data_model: RX [B] sensor=gas_pm2.5            val=0.0        device=1
+2026-04-30 15:23:26 [DEBUG] core.data_model: Updated gas_pm2.5            = 0.0         device=1
+2026-04-30 15:23:26 [DEBUG] core.data_model: RX [B] sensor=water_level          val=0.0        device=1
+2026-04-30 15:23:26 [DEBUG] core.data_model: Updated water_level          = 0.0         device=1
+2026-04-30 15:23:26 [DEBUG] core.data_model: RX [B] sensor=gas_o2               val=Error      device=1
+2026-04-30 15:23:26 [DEBUG] core.data_model: Error reading  gas_o2                device=1
+2026-04-30 15:23:26 [DEBUG] core.data_model: RX [B] sensor=gas_co2              val=Error      device=1
+2026-04-30 15:23:26 [DEBUG] core.data_model: Error reading  gas_co2               device=1
+2026-04-30 15:23:26 [DEBUG] core.data_model: RX [B] sensor=gas_co               val=Error      device=1
+2026-04-30 15:23:26 [DEBUG] core.data_model: Error reading  gas_co                device=1
+2026-04-30 15:23:26 [DEBUG] core.data_model: RX [B] sensor=gas_h2s              val=Error      device=1
+2026-04-30 15:23:26 [DEBUG] core.data_model: Error reading  gas_h2s               device=1
+2026-04-30 15:23:26 [DEBUG] core.data_model: RX [B] sensor=gas_ch4              val=Error      device=1
+2026-04-30 15:23:26 [DEBUG] core.data_model: Error reading  gas_ch4               device=1
+2026-04-30 15:23:26 [DEBUG] core.data_model: RX [B] sensor=gas_ex               val=Error      device=1
+2026-04-30 15:23:26 [DEBUG] core.data_model: Error reading  gas_ex                device=1
+2026-04-30 15:23:26 [INFO] core.data_model: System BIND (topic=Confined_Space/site_name/sensor_data)
+2026-04-30 15:23:27 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:26.917Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "air_humidity", "display_name": "相對濕度", "value": 56.4, "unit": "%RH", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 100], "lv2_range": [0, 100]}
+2026-04-30 15:23:27 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:26.918Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "air_temperature", "display_name": "氣溫", "value": 24.5, "unit": "°C", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 100], "lv2_range": [0, 100]}
+2026-04-30 15:23:27 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:26.918Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "gas_pm2.5", "display_name": "PM2.5", "value": 0.0, "unit": "ug/m3", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 1000], "lv2_range": [0, 1000]}
+2026-04-30 15:23:27 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:26.919Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "water_level", "display_name": "水位", "value": 0.0, "unit": "exist", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 0.1], "lv2_range": [0, 0.1]}
+2026-04-30 15:23:27 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:26.919Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "gas_o2", "display_name": "氧氣 (O2)", "value": "Error", "unit": "%Vol", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [20, 21], "lv2_range": [19.5, 22]}
+2026-04-30 15:23:27 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:26.920Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "gas_co2", "display_name": "二氧化碳 (CO2)", "value": "Error", "unit": "PPM", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 2000], "lv2_range": [0, 2000]}
+2026-04-30 15:23:27 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:26.921Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "gas_co", "display_name": "一氧化碳 (CO)", "value": "Error", "unit": "ppm", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 37.5], "lv2_range": [0, 75]}
+2026-04-30 15:23:27 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:26.921Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "gas_h2s", "display_name": "硫化氫 (H2S)", "value": "Error", "unit": "ppm", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 7.5], "lv2_range": [0, 10]}
+2026-04-30 15:23:27 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:26.922Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "gas_ch4", "display_name": "甲烷 (CH4)", "value": "Error", "unit": "%LEL", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 5], "lv2_range": [0, 10]}
+2026-04-30 15:23:27 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:26.923Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "gas_ex", "display_name": "易燃氣體 (EX)", "value": "Error", "unit": "%LEL", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 10], "lv2_range": [0, 10]}
+2026-04-30 15:23:27 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:26.917Z", "node_id": 0, "device_id": 0, "bind": true, "sensor_type": "air_flow", "display_name": "風速", "value": 0.0, "unit": "m/s", "battery": null, "signal": null, "alarm": true, "alarm_level": "LV1", "lv1_range": [1, 100], "lv2_range": [0, 100]}
+2026-04-30 15:23:27 [DEBUG] core.publisher: Flushed 11 sensor readings to cs/STP Office2/sam_testing/sensor
+2026-04-30 15:23:27 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"status": "bind"}
+2026-04-30 15:23:27 [INFO] core.data_model: System BIND (topic=Confined_Space/site_name/sensor_data)
+2026-04-30 15:23:28 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 0, "air_flow": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:28 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "air_humidity": 56.5, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:28 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "air_temperature": 24.6, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:28 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_pm2.5": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:28 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "water_level": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:28 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_o2": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:28 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_co2": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:28 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_co": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:28 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_h2s": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:28 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_ch4": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:28 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_ex": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:28 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"status": "bind"}
+2026-04-30 15:23:28 [DEBUG] core.data_model: RX [B] sensor=air_flow             val=0.0        device=0
+2026-04-30 15:23:28 [DEBUG] core.data_model: Updated air_flow             = 0.0         device=0
+2026-04-30 15:23:28 [DEBUG] core.data_model: RX [B] sensor=air_humidity         val=56.5       device=1
+2026-04-30 15:23:28 [DEBUG] core.data_model: Updated air_humidity         = 56.5        device=1
+2026-04-30 15:23:28 [DEBUG] core.data_model: RX [B] sensor=air_temperature      val=24.6       device=1
+2026-04-30 15:23:28 [DEBUG] core.data_model: Updated air_temperature      = 24.6        device=1
+2026-04-30 15:23:28 [DEBUG] core.data_model: RX [B] sensor=gas_pm2.5            val=0.0        device=1
+2026-04-30 15:23:28 [DEBUG] core.data_model: Updated gas_pm2.5            = 0.0         device=1
+2026-04-30 15:23:28 [DEBUG] core.data_model: RX [B] sensor=water_level          val=0.0        device=1
+2026-04-30 15:23:28 [DEBUG] core.data_model: Updated water_level          = 0.0         device=1
+2026-04-30 15:23:28 [DEBUG] core.data_model: RX [B] sensor=gas_o2               val=Error      device=1
+2026-04-30 15:23:28 [DEBUG] core.data_model: Error reading  gas_o2                device=1
+2026-04-30 15:23:28 [DEBUG] core.data_model: RX [B] sensor=gas_co2              val=Error      device=1
+2026-04-30 15:23:28 [DEBUG] core.data_model: Error reading  gas_co2               device=1
+2026-04-30 15:23:28 [DEBUG] core.data_model: RX [B] sensor=gas_co               val=Error      device=1
+2026-04-30 15:23:28 [DEBUG] core.data_model: Error reading  gas_co                device=1
+2026-04-30 15:23:28 [DEBUG] core.data_model: RX [B] sensor=gas_h2s              val=Error      device=1
+2026-04-30 15:23:28 [DEBUG] core.data_model: Error reading  gas_h2s               device=1
+2026-04-30 15:23:28 [DEBUG] core.data_model: RX [B] sensor=gas_ch4              val=Error      device=1
+2026-04-30 15:23:28 [DEBUG] core.data_model: Error reading  gas_ch4               device=1
+2026-04-30 15:23:28 [DEBUG] core.data_model: RX [B] sensor=gas_ex               val=Error      device=1
+2026-04-30 15:23:28 [DEBUG] core.data_model: Error reading  gas_ex                device=1
+2026-04-30 15:23:28 [INFO] core.data_model: System BIND (topic=Confined_Space/site_name/sensor_data)
+2026-04-30 15:23:29 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"status": "bind"}
+2026-04-30 15:23:29 [INFO] core.data_model: System BIND (topic=Confined_Space/site_name/sensor_data)
+2026-04-30 15:23:30 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 0, "air_flow": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:30 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "air_humidity": 56.5, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:30 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "air_temperature": 24.6, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:30 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_pm2.5": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:30 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "water_level": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:30 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_o2": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:30 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_co2": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:30 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_co": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:30 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_h2s": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:30 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_ch4": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:30 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_ex": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:30 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"status": "bind"}
+2026-04-30 15:23:30 [DEBUG] core.data_model: RX [B] sensor=air_flow             val=0.0        device=0
+2026-04-30 15:23:30 [DEBUG] core.data_model: Updated air_flow             = 0.0         device=0
+2026-04-30 15:23:30 [DEBUG] core.data_model: RX [B] sensor=air_humidity         val=56.5       device=1
+2026-04-30 15:23:30 [DEBUG] core.data_model: Updated air_humidity         = 56.5        device=1
+2026-04-30 15:23:30 [DEBUG] core.data_model: RX [B] sensor=air_temperature      val=24.6       device=1
+2026-04-30 15:23:30 [DEBUG] core.data_model: Updated air_temperature      = 24.6        device=1
+2026-04-30 15:23:30 [DEBUG] core.data_model: RX [B] sensor=gas_pm2.5            val=0.0        device=1
+2026-04-30 15:23:30 [DEBUG] core.data_model: Updated gas_pm2.5            = 0.0         device=1
+2026-04-30 15:23:30 [DEBUG] core.data_model: RX [B] sensor=water_level          val=0.0        device=1
+2026-04-30 15:23:30 [DEBUG] core.data_model: Updated water_level          = 0.0         device=1
+2026-04-30 15:23:30 [DEBUG] core.data_model: RX [B] sensor=gas_o2               val=Error      device=1
+2026-04-30 15:23:30 [DEBUG] core.data_model: Error reading  gas_o2                device=1
+2026-04-30 15:23:30 [DEBUG] core.data_model: RX [B] sensor=gas_co2              val=Error      device=1
+2026-04-30 15:23:30 [DEBUG] core.data_model: Error reading  gas_co2               device=1
+2026-04-30 15:23:30 [DEBUG] core.data_model: RX [B] sensor=gas_co               val=Error      device=1
+2026-04-30 15:23:30 [DEBUG] core.data_model: Error reading  gas_co                device=1
+2026-04-30 15:23:30 [DEBUG] core.data_model: RX [B] sensor=gas_h2s              val=Error      device=1
+2026-04-30 15:23:30 [DEBUG] core.data_model: Error reading  gas_h2s               device=1
+2026-04-30 15:23:30 [DEBUG] core.data_model: RX [B] sensor=gas_ch4              val=Error      device=1
+2026-04-30 15:23:30 [DEBUG] core.data_model: Error reading  gas_ch4               device=1
+2026-04-30 15:23:30 [DEBUG] core.data_model: RX [B] sensor=gas_ex               val=Error      device=1
+2026-04-30 15:23:30 [DEBUG] core.data_model: Error reading  gas_ex                device=1
+2026-04-30 15:23:30 [INFO] core.data_model: System BIND (topic=Confined_Space/site_name/sensor_data)
+2026-04-30 15:23:30,,,,,24.6,56.5,0.0,,0.0,0.0,,,
+2026-04-30 15:23:30 [DEBUG] core.data_model: CSV: 2026-04-30 15:23:30,,,,,24.6,56.5,0.0,,0.0,0.0,,,
+2026-04-30 15:23:31 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"status": "bind"}
+2026-04-30 15:23:31 [INFO] core.data_model: System BIND (topic=Confined_Space/site_name/sensor_data)
+2026-04-30 15:23:32 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 0, "air_flow": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:32 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "air_humidity": 56.5, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:32 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "air_temperature": 24.6, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:32 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_pm2.5": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:32 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "water_level": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:32 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_o2": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:32 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_co2": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:32 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_co": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:32 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_h2s": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:32 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_ch4": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:32 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_ex": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:32 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:30.919Z", "node_id": 0, "device_id": 0, "bind": true, "sensor_type": "air_flow", "display_name": "風速", "value": 0.0, "unit": "m/s", "battery": null, "signal": null, "alarm": true, "alarm_level": "LV1", "lv1_range": [1, 100], "lv2_range": [0, 100]}
+2026-04-30 15:23:32 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:30.920Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "air_humidity", "display_name": "相對濕度", "value": 56.5, "unit": "%RH", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 100], "lv2_range": [0, 100]}
+2026-04-30 15:23:32 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:30.920Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "air_temperature", "display_name": "氣溫", "value": 24.6, "unit": "°C", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 100], "lv2_range": [0, 100]}
+2026-04-30 15:23:32 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:30.921Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "gas_pm2.5", "display_name": "PM2.5", "value": 0.0, "unit": "ug/m3", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 1000], "lv2_range": [0, 1000]}
+2026-04-30 15:23:32 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:30.922Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "water_level", "display_name": "水位", "value": 0.0, "unit": "exist", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 0.1], "lv2_range": [0, 0.1]}
+2026-04-30 15:23:32 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:30.923Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "gas_o2", "display_name": "氧氣 (O2)", "value": "Error", "unit": "%Vol", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [20, 21], "lv2_range": [19.5, 22]}
+2026-04-30 15:23:32 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:30.924Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "gas_co2", "display_name": "二氧化碳 (CO2)", "value": "Error", "unit": "PPM", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 2000], "lv2_range": [0, 2000]}
+2026-04-30 15:23:32 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:30.925Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "gas_co", "display_name": "一氧化碳 (CO)", "value": "Error", "unit": "ppm", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 37.5], "lv2_range": [0, 75]}
+2026-04-30 15:23:32 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:30.926Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "gas_h2s", "display_name": "硫化氫 (H2S)", "value": "Error", "unit": "ppm", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 7.5], "lv2_range": [0, 10]}
+2026-04-30 15:23:32 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:30.927Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "gas_ch4", "display_name": "甲烷 (CH4)", "value": "Error", "unit": "%LEL", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 5], "lv2_range": [0, 10]}
+2026-04-30 15:23:32 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/sensor  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:30.928Z", "node_id": 0, "device_id": 1, "bind": true, "sensor_type": "gas_ex", "display_name": "易燃氣體 (EX)", "value": "Error", "unit": "%LEL", "battery": 100, "signal": null, "alarm": false, "alarm_level": null, "lv1_range": [0, 10], "lv2_range": [0, 10]}
+2026-04-30 15:23:32 [DEBUG] core.publisher: Flushed 11 sensor readings to cs/STP Office2/sam_testing/sensor
+2026-04-30 15:23:32 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/heartbeat  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:32.769Z", "type": "heartbeat", "bind": true, "bind_status": "bind", "uptime": "00:09:33", "cpu_percent": 43.9, "cpu_temp_c": null, "memory_mb": 116.9, "sys_memory_pct": 71.7, "thread_count": 8, "mqtt_tx_count": 1295, "network": {"private_connected": true, "public_connected": true}, "active_alarms": [], "alarm_count": 0}
+2026-04-30 15:23:32 [DEBUG] core.publisher: Heartbeat  uptime=00:09:33  bind=True
+2026-04-30 15:23:32 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"status": "bind"}
+2026-04-30 15:23:32 [DEBUG] core.data_model: RX [B] sensor=air_flow             val=0.0        device=0
+2026-04-30 15:23:32 [DEBUG] core.data_model: Updated air_flow             = 0.0         device=0
+2026-04-30 15:23:32 [DEBUG] core.data_model: RX [B] sensor=air_humidity         val=56.5       device=1
+2026-04-30 15:23:32 [DEBUG] core.data_model: Updated air_humidity         = 56.5        device=1
+2026-04-30 15:23:32 [DEBUG] core.data_model: RX [B] sensor=air_temperature      val=24.6       device=1
+2026-04-30 15:23:32 [DEBUG] core.data_model: Updated air_temperature      = 24.6        device=1
+2026-04-30 15:23:32 [DEBUG] core.data_model: RX [B] sensor=gas_pm2.5            val=0.0        device=1
+2026-04-30 15:23:32 [DEBUG] core.data_model: Updated gas_pm2.5            = 0.0         device=1
+2026-04-30 15:23:32 [DEBUG] core.data_model: RX [B] sensor=water_level          val=0.0        device=1
+2026-04-30 15:23:32 [DEBUG] core.data_model: Updated water_level          = 0.0         device=1
+2026-04-30 15:23:32 [DEBUG] core.data_model: RX [B] sensor=gas_o2               val=Error      device=1
+2026-04-30 15:23:32 [DEBUG] core.data_model: Error reading  gas_o2                device=1
+2026-04-30 15:23:32 [DEBUG] core.data_model: RX [B] sensor=gas_co2              val=Error      device=1
+2026-04-30 15:23:32 [DEBUG] core.data_model: Error reading  gas_co2               device=1
+2026-04-30 15:23:32 [DEBUG] core.data_model: RX [B] sensor=gas_co               val=Error      device=1
+2026-04-30 15:23:32 [DEBUG] core.data_model: Error reading  gas_co                device=1
+2026-04-30 15:23:32 [DEBUG] core.data_model: RX [B] sensor=gas_h2s              val=Error      device=1
+2026-04-30 15:23:32 [DEBUG] core.data_model: Error reading  gas_h2s               device=1
+2026-04-30 15:23:32 [DEBUG] core.data_model: RX [B] sensor=gas_ch4              val=Error      device=1
+2026-04-30 15:23:32 [DEBUG] core.data_model: Error reading  gas_ch4               device=1
+2026-04-30 15:23:32 [DEBUG] core.data_model: RX [B] sensor=gas_ex               val=Error      device=1
+2026-04-30 15:23:32 [DEBUG] core.data_model: Error reading  gas_ex                device=1
+2026-04-30 15:23:32 [INFO] core.data_model: System BIND (topic=Confined_Space/site_name/sensor_data)
+2026-04-30 15:23:33 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"status": "bind"}
+2026-04-30 15:23:33 [INFO] core.data_model: System BIND (topic=Confined_Space/site_name/sensor_data)
+2026-04-30 15:23:34 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 0, "air_flow": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:34 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "air_humidity": 56.5, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:34 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "air_temperature": 24.6, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:34 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_pm2.5": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:34 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "water_level": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:34 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_o2": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:34 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_co2": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:34 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_co": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:34 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_h2s": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:34 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_ch4": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:34 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_ex": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:34 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"status": "bind"}
+2026-04-30 15:23:34 [DEBUG] core.data_model: RX [B] sensor=air_flow             val=0.0        device=0
+2026-04-30 15:23:34 [DEBUG] core.data_model: Updated air_flow             = 0.0         device=0
+2026-04-30 15:23:34 [DEBUG] core.data_model: RX [B] sensor=air_humidity         val=56.5       device=1
+2026-04-30 15:23:34 [DEBUG] core.data_model: Updated air_humidity         = 56.5        device=1
+2026-04-30 15:23:34 [DEBUG] core.data_model: RX [B] sensor=air_temperature      val=24.6       device=1
+2026-04-30 15:23:34 [DEBUG] core.data_model: Updated air_temperature      = 24.6        device=1
+2026-04-30 15:23:34 [DEBUG] core.data_model: RX [B] sensor=gas_pm2.5            val=0.0        device=1
+2026-04-30 15:23:34 [DEBUG] core.data_model: Updated gas_pm2.5            = 0.0         device=1
+2026-04-30 15:23:34 [DEBUG] core.data_model: RX [B] sensor=water_level          val=0.0        device=1
+2026-04-30 15:23:34 [DEBUG] core.data_model: Updated water_level          = 0.0         device=1
+2026-04-30 15:23:34 [DEBUG] core.data_model: RX [B] sensor=gas_o2               val=Error      device=1
+2026-04-30 15:23:34 [DEBUG] core.data_model: Error reading  gas_o2                device=1
+2026-04-30 15:23:34 [DEBUG] core.data_model: RX [B] sensor=gas_co2              val=Error      device=1
+2026-04-30 15:23:34 [DEBUG] core.data_model: Error reading  gas_co2               device=1
+2026-04-30 15:23:34 [DEBUG] core.data_model: RX [B] sensor=gas_co               val=Error      device=1
+2026-04-30 15:23:34 [DEBUG] core.data_model: Error reading  gas_co                device=1
+2026-04-30 15:23:34 [DEBUG] core.data_model: RX [B] sensor=gas_h2s              val=Error      device=1
+2026-04-30 15:23:34 [DEBUG] core.data_model: Error reading  gas_h2s               device=1
+2026-04-30 15:23:34 [DEBUG] core.data_model: RX [B] sensor=gas_ch4              val=Error      device=1
+2026-04-30 15:23:34 [DEBUG] core.data_model: Error reading  gas_ch4               device=1
+2026-04-30 15:23:34 [DEBUG] core.data_model: RX [B] sensor=gas_ex               val=Error      device=1
+2026-04-30 15:23:34 [DEBUG] core.data_model: Error reading  gas_ex                device=1
+2026-04-30 15:23:34 [INFO] core.data_model: System BIND (topic=Confined_Space/site_name/sensor_data)
+2026-04-30 15:23:35 [DEBUG] ui.status_bar: Battery: 本機 ⚡ 100% 充電中  charging=True
+2026-04-30 15:23:35 [DEBUG] core.publisher: TX → cs/STP Office2/sam_testing/bind  |  {"site_name": "STP Office2", "gateway_id": "sam_testing", "timestamp": "2026-04-30T07:23:35.622Z", "type": "bind_event", "bind": true, "bind_status": "bind", "event": "periodic"}
+2026-04-30 15:23:35 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"status": "bind"}
+2026-04-30 15:23:35 [INFO] core.data_model: System BIND (topic=Confined_Space/site_name/sensor_data)
+2026-04-30 15:23:36 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 0, "air_flow": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:36 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "air_humidity": 56.5, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:36 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "air_temperature": 24.6, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:36 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_pm2.5": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:36 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "water_level": 0.0, "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:36 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_o2": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:36 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_co2": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:36 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_co": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:36 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_h2s": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:36 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_ch4": "Error", "Battery": 100, "Signal": "N/A"}
+2026-04-30 15:23:36 [DEBUG] core.mqtt_client: MQTT [private] ← topic=Confined_Space/site_name/sensor_data  payload={"device_id": 1, "gas_ex": "Error", "Battery": 100, "Signal": "N/A"}
