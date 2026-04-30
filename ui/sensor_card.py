@@ -66,6 +66,12 @@ class SensorCard(QWidget):
         self._level         = "normal"
         self._ever_received = False
 
+        # Read font sizes from config (with sensible defaults)
+        from core.config import get as _cfg_get
+        self._fs_name  = int(_cfg_get("card_name_font_size")  or 11)
+        self._fs_value = int(_cfg_get("card_value_font_size") or 38)
+        self._fs_unit  = int(_cfg_get("card_unit_font_size")  or 9)
+
         # Dirty-check cache
         self._last_text   = ""
         self._last_colour = ""
@@ -198,7 +204,7 @@ class SensorCard(QWidget):
 
         if colour != self._last_colour:
             self._lbl_value.setStyleSheet(
-                f"font-size: 38pt; font-weight: 200; color: {colour};"
+                f"font-size: {self._fs_value}pt; font-weight: 200; color: {colour};"
                 " background: transparent; border: none; letter-spacing: -2px;"
             )
             self._last_colour = colour
@@ -268,26 +274,26 @@ class SensorCard(QWidget):
         # Name label
         name_alpha = "rgba(160,168,190,0.85)" if cstate == "offline" else "#a0a8be"
         self._lbl_name.setStyleSheet(
-            f"font-size: 25pt; font-weight: 600; letter-spacing: 0.3px;"
+            f"font-size: {self._fs_name}pt; font-weight: 600; letter-spacing: 0.3px;"
             f" color: {name_alpha}; background: transparent; border: none;"
         )
 
-        # Device label
+        # Device label (always small — not user-configurable)
         self._lbl_device.setStyleSheet(
-            f"font-size: 7pt; color: #404860;"
+            "font-size: 7pt; color: #404860;"
             " background: transparent; border: none;"
         )
 
         # Unit label
         unit_colour = "#404860" if cstate in ("offline", "error") else "#505878"
         self._lbl_unit.setStyleSheet(
-            f"font-size: 15pt; color: {unit_colour}; letter-spacing: 0.8px;"
+            f"font-size: {self._fs_unit}pt; color: {unit_colour}; letter-spacing: 0.8px;"
             " background: transparent; border: none;"
         )
 
         # Initial value label style if not yet set
         if not self._last_colour:
             self._lbl_value.setStyleSheet(
-                "font-size: 38pt; font-weight: 200; color: #e8eaf0;"
+                f"font-size: {self._fs_value}pt; font-weight: 200; color: #e8eaf0;"
                 " background: transparent; border: none; letter-spacing: -2px;"
             )

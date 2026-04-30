@@ -23,13 +23,14 @@ from pathlib import Path
 # ── 0. Resolve paths FIRST (before any imports that use Path("config.ini")) ──
 #    app_paths must be importable with no other project dependencies
 sys.path.insert(0, str(Path(__file__).parent.resolve()))
-from core.app_paths import ensure_config, CONFIG_PATH, log_path
+from core.app_paths import ensure_config, CONFIG_PATH, log_path, _exe_dir
 
 # Ensure writable config exists next to exe (copies bundled default if needed)
 ensure_config()
 
-# Set CWD to the exe/script directory so relative paths work correctly
-os.chdir(CONFIG_PATH.parent)
+# Set CWD to the exe directory — critical on Linux desktop launch where
+# CWD defaults to $HOME instead of the exe's directory
+os.chdir(_exe_dir())
 
 from core.config       import load as cfg_load, get
 from core.logger_setup import setup_logging

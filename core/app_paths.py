@@ -30,11 +30,18 @@ def _is_frozen() -> bool:
 
 
 def _exe_dir() -> Path:
-    """Directory containing the .exe (frozen) or main.py (dev)."""
+    """
+    Directory containing the .exe (frozen) or main.py (dev).
+
+    When launched from a Linux file manager or Windows desktop shortcut,
+    the CWD may be $HOME or the Desktop — NOT the exe directory.
+    We always derive the path from sys.executable or __file__, never from CWD.
+    """
     if _is_frozen():
-        return Path(sys.executable).parent.resolve()
-    # Dev mode: go up from this file (core/) to project root
-    return Path(__file__).parent.parent.resolve()
+        # sys.executable = full path to the .exe / linux binary
+        return Path(sys.executable).resolve().parent
+    # Dev mode: __file__ is .../core/app_paths.py → go up two levels
+    return Path(__file__).resolve().parent.parent
 
 
 def _bundle_dir() -> Path:

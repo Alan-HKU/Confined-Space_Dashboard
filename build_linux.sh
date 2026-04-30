@@ -1,68 +1,94 @@
 #!/usr/bin/env bash
 # ════════════════════════════════════════════════════════
-#  Linux 打包腳本 — 生成單個可執行文件
+#  Linux 打包腳本 — 生成單個可執行文件 + .desktop 快捷方式
 #  用法：bash build_linux.sh
 # ════════════════════════════════════════════════════════
 
 set -e
-cd "$(dirname "$0")"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$SCRIPT_DIR"
 
 BOLD="\033[1m"; GREEN="\033[32m"; RED="\033[31m"; RESET="\033[0m"
+APP_NAME="密閉空間監測系統"
+EXE_NAME="confined_space_monitor"   # ASCII name for the binary (desktop safe)
 
-echo -e "${BOLD}[1/5] 檢查系統依賴...${RESET}"
-
-# Qt/PySide6 needs these on Debian/Ubuntu
-PKGS_NEEDED=()
-check_pkg() {
-    dpkg -s "$1" &>/dev/null 2>&1 || PKGS_NEEDED+=("$1")
-}
+echo -e "${BOLD}[1/6] 檢查系統依賴...${RESET}"
 
 if command -v dpkg &>/dev/null; then
-    check_pkg libgstreamer1.0-0
-    check_pkg gstreamer1.0-plugins-good
-    check_pkg gstreamer1.0-plugins-bad
-    check_pkg libxcb-cursor0
-    check_pkg libxcb-icccm4
-    check_pkg libxcb-image0
-    check_pkg libxcb-keysyms1
-    check_pkg libxcb-randr0
-    check_pkg libxcb-render-util0
-
+    PKGS_NEEDED=()
+    for pkg in libgstreamer1.0-0 gstreamer1.0-plugins-good gstreamer1.0-plugins-bad \
+               libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 \
+               libxcb-randr0 libxcb-render-util0; do
+        dpkg -s "$pkg" &>/dev/null 2>&1 || PKGS_NEEDED+=("$pkg")
+    done
     if [ ${#PKGS_NEEDED[@]} -gt 0 ]; then
-        echo -e "${GREEN}安裝系統依賴: ${PKGS_NEEDED[*]}${RESET}"
-        sudo apt-get install -y "${PKGS_NEEDED[@]}" 2>/dev/null || \
-            echo "警告：無法自動安裝系統依賴，若運行出錯請手動執行:"
-            echo "  sudo apt install ${PKGS_NEEDED[*]}"
+        echo "安裝系統依賴: ${PKGS_NEEDED[*]}"
+        sudo apt-get install -y "${PKGS_NEEDED[@]}" 2>/dev/null || true
     fi
 fi
 
-echo -e "${BOLD}[2/5] 建立虛擬環境...${RESET}"
+echo -e "${BOLD}[2/6] 建立虛擬環境...${RESET}"
 python3 -m venv .venv
 source .venv/bin/activate
 
-echo -e "${BOLD}[3/5] 安裝 Python 依賴...${RESET}"
+echo -e "${BOLD}[3/6] 安裝 Python 依賴...${RESET}"
 pip install --upgrade pip --quiet
-pip install PySide6 paho-mqtt psutil pyinstaller --quiet
+pip install PySide6 paho-mqtt psutil Pillow pyinstaller --quiet
 
-echo -e "${BOLD}[4/5] 清理舊版本...${RESET}"
+echo -e "${BOLD}[4/6] 清理舊版本...${RESET}"
 rm -rf dist/ build/
 
-echo -e "${BOLD}[5/5] 打包中，請稍候（可能需要 2-5 分鐘）...${RESET}"
-python -m PyInstaller confined_space.spec --noconfirm
+echo -e "${BOLD}[5/6] 打包中（約 2-5 分鐘）...${RESET}"
+python -m PyInstaller confined_space.spec \
+    --noconfirm \
+    --name "$EXE_NAME"
+
+deactivate
+
+EXE_PATH="$(pwd)/dist/$EXE_NAME"
+ICON_PATH="$(pwd)/assets/Picture1.png"
+
+echo -e "${BOLD}[6/6] 生成 .desktop 快捷方式...${RESET}"
+
+# ── Create .desktop file ───────────────────────────────────────────────────
+DESKTOP_FILE="$SCRIPT_DIR/dist/${APP_NAME}.desktop"
+
+cat > "$DESKTOP_FILE" << DESKTOP
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=${APP_NAME}
+Comment=Confined Space Monitoring Dashboard
+Exec=${EXE_PATH}
+Icon=${ICON_PATH}
+WorkingDirectory=$(dirname "$EXE_PATH")
+Terminal=false
+StartupNotify=true
+Categories=Science;Monitor;
+DESKTOP
+
+chmod +x "$DESKTOP_FILE"
+
+# Make the binary executable
+chmod +x "$EXE_PATH"
 
 echo ""
 echo -e "${GREEN}${BOLD}✅ 打包成功！${RESET}"
-echo -e "可執行文件: ${BOLD}dist/密閉空間監測系統${RESET}"
 echo ""
-echo "運行方式："
-echo "  ./dist/密閉空間監測系統"
+echo "可執行文件:  dist/$EXE_NAME"
+echo ".desktop:    dist/${APP_NAME}.desktop"
 echo ""
-echo "如需在無桌面環境（SSH）中測試，先設置 DISPLAY："
-echo "  export DISPLAY=:0 && ./dist/密閉空間監測系統"
+echo -e "${BOLD}桌面雙擊方式：${RESET}"
+echo "  1. 把 dist/ 目錄下的所有文件複製到目標位置（例如桌面）："
+echo "     cp dist/$EXE_NAME          ~/Desktop/"
+echo "     cp dist/${APP_NAME}.desktop ~/Desktop/"
+echo "     # 如果要修改配置，也需要 config.ini 在同目錄："
+echo "     cp config.ini               ~/Desktop/"
 echo ""
-echo "Linux 注意事項："
-echo "  • 聲音需要 GStreamer（已嘗試安裝）"
-echo "  • 首次運行若提示缺少 xcb 庫，請執行:"
-echo "    sudo apt install libxcb-cursor0"
-
-deactivate
+echo "  2. 右鍵 .desktop 文件 → 允許執行 / Allow Launching"
+echo "     （不同桌面環境操作不同）"
+echo ""
+echo "  3. 雙擊 .desktop 即可從桌面直接啟動"
+echo ""
+echo -e "${BOLD}終端啓動方式（無需 .desktop）：${RESET}"
+echo "  cd dist && ./$EXE_NAME"
