@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=密閉空間監測系統
+Comment=Confined Space Monitoring Dashboard
+Exec=/home/yw80/桌面/Confined-Space_Dashboard/dist/密閉空間監測系統
+Icon=/home/yw80/桌面/Confined-Space_Dashboard/assets/Picture1.png
+WorkingDirectory=/home/yw80/桌面/Confined-Space_Dashboard/dist
+Terminal=false
+StartupNotify=true
+Categories=Science;Monitor;
