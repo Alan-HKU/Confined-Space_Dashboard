@@ -268,7 +268,7 @@ class SensorCard(QWidget):
         # Name label
         name_alpha = "rgba(160,168,190,0.85)" if cstate == "offline" else "#a0a8be"
         self._lbl_name.setStyleSheet(
-            f"font-size: 9pt; font-weight: 600; letter-spacing: 0.3px;"
+            f"font-size: 20pt; font-weight: 600; letter-spacing: 0.3px;"
             f" color: {name_alpha}; background: transparent; border: none;"
         )
 
@@ -281,7 +281,7 @@ class SensorCard(QWidget):
         # Unit label
         unit_colour = "#404860" if cstate in ("offline", "error") else "#505878"
         self._lbl_unit.setStyleSheet(
-            f"font-size: 8pt; color: {unit_colour}; letter-spacing: 0.8px;"
+            f"font-size: 15pt; color: {unit_colour}; letter-spacing: 0.8px;"
             " background: transparent; border: none;"
         )
 
